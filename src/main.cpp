@@ -16,7 +16,7 @@ const String deviceId = "АКБ №1";
 // Pin definitions
 const int voltagePin = 34;  // Analog input for voltage measurement
 const int buttonPin = 5;    // Button to activate voltmeter
-const int voltmeterPin = 2; // Control pin for voltmeter via transistor
+const int voltmeterPin = 4; // Control pin for voltmeter via transistor
 
 // Configuration parameters 
 const float voltageDividerFactor = 25.0;            // Calibration factor for 0-25V sensor
