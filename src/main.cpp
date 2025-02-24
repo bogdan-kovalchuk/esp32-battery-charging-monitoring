@@ -18,12 +18,19 @@ const int voltagePin = 34;  // Analog input for voltage measurement
 const int buttonPin = 5;    // Button to activate voltmeter
 const int voltmeterPin = 4; // Control pin for voltmeter via transistor
 
-// Configuration parameters 
-const float voltageDividerFactor = 25.0;            // Calibration factor for 0-25V sensor
-const float criticalVoltage = 11.25;                // Critical voltage level (V)
-const unsigned long infoInterval = 3600000;         // Info messages interval
-const unsigned long criticalInterval = 30 * 60000;  // Critical messages interval
-const unsigned long voltmeterOnTime = 20000;        // 20 seconds to keep voltmeter active
+// Voltage measurement parameters
+const float resistorR1 = 30000.0;      // 30kΩ resistor
+const float resistorR2 = 7500.0;       // 7.5kΩ resistor
+const float vRef = 3.3;                // Reference voltage for ESP32 ADC
+const float adcMax = 4095.0;           // Maximum ADC value
+const int numSamples = 100;            // Number of samples for averaging
+const float correctionFactor = 1.0468; // Correction factor for calibration
+
+// Configuration parameters
+const float criticalVoltage = 11.25;               // Critical voltage level (V)
+const unsigned long infoInterval = 3600000;        // Info messages interval
+const unsigned long criticalInterval = 30 * 60000; // Critical messages interval
+const unsigned long voltmeterOnTime = 20000;       // 20 seconds to keep voltmeter active
 
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
@@ -31,11 +38,19 @@ unsigned long voltmeterStartTime = 0;
 bool isVoltmeterOn = false;
 bool isButtonPressed = false;
 
-// Function to read battery voltage
+// Function to read battery voltage with averaging
 float readBatteryVoltage()
 {
-  int rawValue = analogRead(voltagePin);
-  return (rawValue * 3.3) / 4095.0 * voltageDividerFactor;
+  long sumADC = 0;
+  for (int i = 0; i < numSamples; i++)
+  {
+    sumADC += analogRead(voltagePin);
+    delay(2);
+  }
+  float rawADC = sumADC / (float)numSamples;
+  float voltageOut = (rawADC / adcMax) * vRef;
+  float batteryVoltage = voltageOut * (1 + resistorR1 / resistorR2);
+  return batteryVoltage * correctionFactor;
 }
 
 // Function to send voltage data to the server
@@ -59,8 +74,7 @@ void sendToServer(String msgType, float voltage)
     }
 
     String msgString;
-    serializeJson(msg, msgString); // Convert the JSON object to a string
-
+    serializeJson(msg, msgString);
     int httpResponseCode = http.POST(msgString);
 
     Serial.println("Response: " + String(httpResponseCode));
