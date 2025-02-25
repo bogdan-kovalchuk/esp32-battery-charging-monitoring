@@ -14,8 +14,8 @@ const String serverUrl = "http://141.144.245.187:5000/send";
 const String deviceId = "АКБ №1";
 
 // Pin definitions
-const int voltagePin = 34;  // Analog input for voltage measurement
-const int buttonPin = 5;    // Button to activate voltmeter
+const int voltagePin = 32;  // Analog input for voltage measurement
+const int buttonPin = 34;   // Button to activate voltmeter
 const int voltmeterPin = 4; // Control pin for voltmeter via transistor
 
 // Voltage measurement parameters
@@ -28,8 +28,8 @@ const float correctionFactor = 1.0468; // Correction factor for calibration
 
 // Configuration parameters
 const float criticalVoltage = 11.25;               // Critical voltage level (V)
-const unsigned long infoInterval = 3600000;        // Info messages interval
-const unsigned long criticalInterval = 30 * 60000; // Critical messages interval
+const unsigned long infoInterval = 60 * 60000;     // Info messages interval
+const unsigned long criticalInterval = 15 * 60000; // Critical messages interval
 const unsigned long voltmeterOnTime = 20000;       // 20 seconds to keep voltmeter active
 
 unsigned long lastInfoTime = 0;
@@ -66,7 +66,7 @@ void sendToServer(String msgType, float voltage)
     JsonDocument msg;
     msg["device_id"] = deviceId;
     msg["msg_type"] = msgType;
-    msg["voltage"] = roundf(voltage * 100) / 100.0;
+    msg["voltage"] = roundf(voltage * 10) / 10.0;
 
     if (msgType == "ALERT")
     {
