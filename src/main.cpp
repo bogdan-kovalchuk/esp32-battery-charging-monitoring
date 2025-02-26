@@ -27,10 +27,10 @@ const int numSamples = 100;            // Number of samples for averaging
 const float correctionFactor = 1.0468; // Correction factor for calibration
 
 // Configuration parameters
-const float criticalVoltage = 11.25;               // Critical voltage level (V)
-const unsigned long infoInterval = 60 * 60000;     // Info messages interval
-const unsigned long criticalInterval = 15 * 60000; // Critical messages interval
-const unsigned long voltmeterOnTime = 20000;       // 20 seconds to keep voltmeter active
+const float criticalVoltage = 11.9;               // Critical voltage level (V)
+const unsigned long infoInterval = 15 * 60000;    // Info messages interval
+const unsigned long criticalInterval = 5 * 60000; // Critical messages interval
+const unsigned long voltmeterOnTime = 20000;      // 20 seconds to keep voltmeter active
 
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
@@ -116,11 +116,15 @@ void loop()
 {
   float batteryVoltage = readBatteryVoltage();
 
-  // Send informational message
-  if (millis() - lastInfoTime >= infoInterval)
+  // Only send critical messages if voltage is below critical
+  if (batteryVoltage > criticalVoltage)
   {
-    lastInfoTime = millis();
-    sendToServer("INFO", batteryVoltage);
+    // Send informational message
+    if (millis() - lastInfoTime >= infoInterval)
+    {
+      lastInfoTime = millis();
+      sendToServer("INFO", batteryVoltage);
+    }
   }
 
   // Send critical message if voltage is too low
