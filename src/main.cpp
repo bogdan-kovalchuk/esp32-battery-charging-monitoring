@@ -44,9 +44,11 @@ unsigned long voltOnTime = 20;   // Voltmeter active, seconds
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
 unsigned long voltmeterStartTime = 0;
+unsigned long buttonPressStartTime = 0;
 
 bool isVoltmeterOn = false;
 bool isButtonPressed = false;
+bool isButtonHeld = false;
 
 // Convert time units
 unsigned long convertMinutesToMillis(unsigned long minutes) { return minutes * 60000; }
@@ -169,6 +171,7 @@ void handleSave()
   saveConfig();
   server.send(200, "text/html", "<html><body><h1>Config Saved! Restarting...</h1></body></html>");
   delay(2000);
+  Serial.println("Restarting ESP32 .....");
   ESP.restart();
 }
 
@@ -179,7 +182,7 @@ void setupWiFi()
 
   unsigned long startAttemptTime = millis();
 
-  while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 30000)
+  while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 30000) // 30 seconds
   {
     delay(1000);
     Serial.print(".");
@@ -193,6 +196,11 @@ void setupWiFi()
   {
     Serial.println("\nFailed to connect. Starting AP mode.");
     WiFi.softAP("ESP32-AP", "12345678");
+
+    delay(1000);
+    Serial.print("IP Address in AP Mode: ");
+    Serial.println(WiFi.softAPIP());
+
     server.on("/", HTTP_GET, handleRoot);
     server.on("/save", HTTP_POST, handleSave);
     server.begin();
@@ -208,7 +216,6 @@ void setup()
   pinMode(buttonPin, INPUT);
 
   loadConfig();
-
   setupWiFi();
 
   // Send the first reference message
@@ -240,28 +247,58 @@ void loop()
       lastInfoTime = millis();
       sendToServer("INFO", batteryVoltage);
     }
+
     if (batteryVoltage <= critVoltage && millis() - lastCriticalTime >= critIntervalMs)
     {
       lastCriticalTime = millis();
       sendToServer("ALERT", batteryVoltage);
     }
-    bool currentButtonState = digitalRead(buttonPin);
-    if (currentButtonState == HIGH && !isButtonPressed)
+  }
+
+  bool currentButtonState = digitalRead(buttonPin);
+  if (currentButtonState == HIGH && !isButtonPressed)
+  {
+    isButtonPressed = true;
+    buttonPressStartTime = millis();
+  }
+
+  if (currentButtonState == LOW && isButtonPressed)
+  {
+    isButtonPressed = false;
+    digitalWrite(voltmeterPin, HIGH);
+    voltmeterStartTime = millis();
+    isVoltmeterOn = true;
+  }
+
+  if (isVoltmeterOn && millis() - voltmeterStartTime >= voltOnTimeMs)
+  {
+    digitalWrite(voltmeterPin, LOW);
+    isVoltmeterOn = false;
+  }
+
+  // If the button is pressed for more than 10 seconds reset config
+  if (isButtonPressed && millis() - buttonPressStartTime >= 10000) // 10 seconds
+  {
+    if (!isButtonHeld) // If it hasn't been done yet
     {
-      isButtonPressed = true;
-    }
-    if (currentButtonState == LOW && isButtonPressed)
-    {
-      isButtonPressed = false;
-      digitalWrite(voltmeterPin, HIGH);
-      voltmeterStartTime = millis();
-      isVoltmeterOn = true;
-    }
-    if (isVoltmeterOn && millis() - voltmeterStartTime >= voltOnTimeMs)
-    {
-      digitalWrite(voltmeterPin, LOW);
-      isVoltmeterOn = false;
+      isButtonHeld = true;
+      Serial.println("Button held for 10 seconds, resetting configuration.");
+
+      // Clear the configuration and set default values
+      config.begin(namespaceName, false);
+      config.clear();
+      config.putString("ssid", "Starlink1721");
+      config.putString("password", "Qwe123rty456");
+      config.putString("serverUrl", "http://141.144.245.187:5000/send");
+      config.putString("deviceId", "АКБ №1");
+      config.putFloat("critVoltage", 11.9);
+      config.putULong("infoInterval", 15);
+      config.putULong("critInterval", 5);
+      config.end();
+      Serial.println("Restarting ESP32 .....");
+      ESP.restart();
     }
   }
+
   delay(100);
 }
