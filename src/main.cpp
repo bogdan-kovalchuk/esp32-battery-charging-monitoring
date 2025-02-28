@@ -195,9 +195,9 @@ void setupWiFi()
   else
   {
     Serial.println("\nFailed to connect. Starting AP mode.");
+    WiFi.mode(WIFI_MODE_AP);
     WiFi.softAP("ESP32-AP", "12345678");
 
-    delay(1000);
     Serial.print("IP Address in AP Mode: ");
     Serial.println(WiFi.softAPIP());
 
@@ -235,7 +235,7 @@ void setup()
 // Main loop
 void loop()
 {
-  if (WiFi.getMode() == WIFI_AP)
+  if (WiFi.getMode() == WIFI_MODE_AP)
   {
     server.handleClient();
   }
