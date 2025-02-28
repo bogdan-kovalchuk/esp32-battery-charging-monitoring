@@ -82,12 +82,19 @@ void loadConfig()
     config.begin(namespaceName, true);
   }
   ssid = config.getString("ssid", "");
+  Serial.println("SSID: " + ssid);
   password = config.getString("password", "");
+  Serial.println("Password: " + password);
   serverUrl = config.getString("serverUrl", "");
+  Serial.println("Server URL: " + serverUrl);
   deviceId = config.getString("deviceId", "");
+  Serial.println("Device ID: " + deviceId);
   critVoltage = config.getFloat("critVoltage", 0.0);
+  Serial.println("Critical Voltage: " + String(critVoltage));
   infoInterval = config.getULong("infoInterval", 0);
+  Serial.println("Info Interval: " + String(infoInterval));
   critInterval = config.getULong("critInterval", 0);
+  Serial.println("Critical Interval: " + String(critInterval));
   config.end();
 }
 
@@ -171,13 +178,20 @@ void setupWiFi()
   WiFi.begin(ssid.c_str(), password.c_str());
 
   unsigned long startAttemptTime = millis();
+
   while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 30000)
   {
     delay(1000);
+    Serial.print(".");
   }
 
-  if (WiFi.status() != WL_CONNECTED)
+  if (WiFi.status() == WL_CONNECTED)
   {
+    Serial.println("\nConnected to WiFi");
+  }
+  else
+  {
+    Serial.println("\nFailed to connect. Starting AP mode.");
     WiFi.softAP("ESP32-AP", "12345678");
     server.on("/", HTTP_GET, handleRoot);
     server.on("/save", HTTP_POST, handleSave);
@@ -189,21 +203,25 @@ void setupWiFi()
 void setup()
 {
   Serial.begin(115200);
+
   pinMode(voltmeterPin, OUTPUT);
   pinMode(buttonPin, INPUT);
 
+  loadConfig();
+
   setupWiFi();
 
-  // Immediately send the first info message
+  // Send the first reference message
   float batteryVoltage = readBatteryVoltage();
-  sendToServer("INFO", batteryVoltage);
-  lastInfoTime = millis();
-
-  // If voltage is below critical level, send a critical alert
   if (batteryVoltage <= critVoltage)
   {
     sendToServer("ALERT", batteryVoltage);
     lastCriticalTime = millis();
+  }
+  else
+  {
+    sendToServer("INFO", batteryVoltage);
+    lastInfoTime = millis();
   }
 }
 
