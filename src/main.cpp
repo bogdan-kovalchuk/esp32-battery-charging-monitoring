@@ -27,16 +27,32 @@ const int numSamples = 100;            // Number of samples for averaging
 const float correctionFactor = 1.0468; // Correction factor for calibration
 
 // Configuration parameters
-const float criticalVoltage = 11.9;               // Critical voltage level (V)
-const unsigned long infoInterval = 15 * 60000;    // Info messages interval
-const unsigned long criticalInterval = 5 * 60000; // Critical messages interval
-const unsigned long voltmeterOnTime = 20000;      // 20 seconds to keep voltmeter active
+const float criticalVoltage = 11.9;       // Critical voltage level (V)
+const unsigned long infoInterval = 15;    // Info messages interval, minutes
+const unsigned long criticalInterval = 5; // Critical messages interval, minutes
+const unsigned long voltmeterOnTime = 20; // Voltmeter active, seconds
 
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
 unsigned long voltmeterStartTime = 0;
 bool isVoltmeterOn = false;
 bool isButtonPressed = false;
+
+// Convert minutes to milliseconds
+unsigned long convertMinutesToMillis(unsigned long minutes)
+{
+  return minutes * 60000;
+}
+
+// Convert seconds to milliseconds
+unsigned long convertSecondsToMillis(unsigned long seconds)
+{
+  return seconds * 1000;
+}
+
+unsigned long infoIntervalMs = convertMinutesToMillis(infoInterval);
+unsigned long criticalIntervalMs = convertMinutesToMillis(criticalInterval);
+unsigned long voltmeterOnTimeMs = convertSecondsToMillis(voltmeterOnTime);
 
 // Function to read battery voltage with averaging
 float readBatteryVoltage()
@@ -120,7 +136,7 @@ void loop()
   if (batteryVoltage > criticalVoltage)
   {
     // Send informational message
-    if (millis() - lastInfoTime >= infoInterval)
+    if (millis() - lastInfoTime >= infoIntervalMs)
     {
       lastInfoTime = millis();
       sendToServer("INFO", batteryVoltage);
@@ -128,7 +144,7 @@ void loop()
   }
 
   // Send critical message if voltage is too low
-  if (batteryVoltage <= criticalVoltage && millis() - lastCriticalTime >= criticalInterval)
+  if (batteryVoltage <= criticalVoltage && millis() - lastCriticalTime >= criticalIntervalMs)
   {
     lastCriticalTime = millis();
     sendToServer("ALERT", batteryVoltage);
@@ -151,7 +167,7 @@ void loop()
   }
 
   // Turn off voltmeter after 20 seconds
-  if (isVoltmeterOn && millis() - voltmeterStartTime >= voltmeterOnTime)
+  if (isVoltmeterOn && millis() - voltmeterStartTime >= voltmeterOnTimeMs)
   {
     digitalWrite(voltmeterPin, LOW);
     isVoltmeterOn = false;
