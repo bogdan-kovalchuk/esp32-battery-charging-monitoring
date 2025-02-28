@@ -4,14 +4,14 @@
 #include <ArduinoJson.h>
 
 // WiFi credentials
-const String ssid = "Starlink172";
-const String password = "Qwe123rty456";
+String ssid = "Starlink172";
+String password = "Qwe123rty456";
 
 // Server URL
-const String serverUrl = "http://141.144.245.187:5000/send";
+String serverUrl = "http://141.144.245.187:5000/send";
 
 // Device identifier
-const String deviceId = "АКБ №1";
+String deviceId = "АКБ №1";
 
 // Pin definitions
 const int voltagePin = 32;  // Analog input for voltage measurement
@@ -19,18 +19,18 @@ const int buttonPin = 34;   // Button to activate voltmeter
 const int voltmeterPin = 4; // Control pin for voltmeter via transistor
 
 // Voltage measurement parameters
-const float resistorR1 = 30000.0;      // 30kΩ resistor
-const float resistorR2 = 7500.0;       // 7.5kΩ resistor
-const float vRef = 3.3;                // Reference voltage for ESP32 ADC
-const float adcMax = 4095.0;           // Maximum ADC value
-const int numSamples = 100;            // Number of samples for averaging
-const float correctionFactor = 1.0468; // Correction factor for calibration
+const float resistorR1 = 30000.0; // 30kΩ resistor
+const float resistorR2 = 7500.0;  // 7.5kΩ resistor
+const float vRef = 3.3;           // Reference voltage for ESP32 ADC
+const float adcMax = 4095.0;      // Maximum ADC value
+int numSamples = 100;             // Number of samples for averaging
+float corrFactor = 1.0468;        // Correction factor for calibration
 
 // Configuration parameters
-const float criticalVoltage = 11.9;       // Critical voltage level (V)
-const unsigned long infoInterval = 15;    // Info messages interval, minutes
-const unsigned long criticalInterval = 5; // Critical messages interval, minutes
-const unsigned long voltmeterOnTime = 20; // Voltmeter active, seconds
+float critVoltage = 11.9;        // Critical voltage level (V)
+unsigned long infoInterval = 15; // Info messages interval, minutes
+unsigned long critInterval = 5;  // Critical messages interval, minutes
+unsigned long voltOnTime = 20;   // Voltmeter active, seconds
 
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
@@ -51,8 +51,8 @@ unsigned long convertSecondsToMillis(unsigned long seconds)
 }
 
 unsigned long infoIntervalMs = convertMinutesToMillis(infoInterval);
-unsigned long criticalIntervalMs = convertMinutesToMillis(criticalInterval);
-unsigned long voltmeterOnTimeMs = convertSecondsToMillis(voltmeterOnTime);
+unsigned long critIntervalMs = convertMinutesToMillis(critInterval);
+unsigned long voltOnTimeMs = convertSecondsToMillis(voltOnTime);
 
 // Function to read battery voltage with averaging
 float readBatteryVoltage()
@@ -66,7 +66,7 @@ float readBatteryVoltage()
   float rawADC = sumADC / (float)numSamples;
   float voltageOut = (rawADC / adcMax) * vRef;
   float batteryVoltage = voltageOut * (1 + resistorR1 / resistorR2);
-  return batteryVoltage * correctionFactor;
+  return batteryVoltage * corrFactor;
 }
 
 // Function to send voltage data to the server
@@ -86,7 +86,7 @@ void sendToServer(String msgType, float voltage)
 
     if (msgType == "ALERT")
     {
-      msg["critical_voltage"] = criticalVoltage;
+      msg["critical_voltage"] = critVoltage;
     }
 
     String msgString;
@@ -120,7 +120,7 @@ void setup()
   lastInfoTime = millis();
 
   // If voltage is below critical level, send a critical alert
-  if (batteryVoltage <= criticalVoltage)
+  if (batteryVoltage <= critVoltage)
   {
     sendToServer("ALERT", batteryVoltage);
     lastCriticalTime = millis();
@@ -133,7 +133,7 @@ void loop()
   float batteryVoltage = readBatteryVoltage();
 
   // Only send critical messages if voltage is below critical
-  if (batteryVoltage > criticalVoltage)
+  if (batteryVoltage > critVoltage)
   {
     // Send informational message
     if (millis() - lastInfoTime >= infoIntervalMs)
@@ -144,7 +144,7 @@ void loop()
   }
 
   // Send critical message if voltage is too low
-  if (batteryVoltage <= criticalVoltage && millis() - lastCriticalTime >= criticalIntervalMs)
+  if (batteryVoltage <= critVoltage && millis() - lastCriticalTime >= critIntervalMs)
   {
     lastCriticalTime = millis();
     sendToServer("ALERT", batteryVoltage);
@@ -167,7 +167,7 @@ void loop()
   }
 
   // Turn off voltmeter after 20 seconds
-  if (isVoltmeterOn && millis() - voltmeterStartTime >= voltmeterOnTimeMs)
+  if (isVoltmeterOn && millis() - voltmeterStartTime >= voltOnTimeMs)
   {
     digitalWrite(voltmeterPin, LOW);
     isVoltmeterOn = false;
