@@ -13,14 +13,14 @@ Preferences config;
 WebServer server(80);
 
 // WiFi credentials
-String ssid = "Starlink172";
-String password = "Qwe123rty456";
+String ssid = "";
+String password = "";
 
 // Server URL
-String serverUrl = "http://141.144.245.187:5000/send";
+String serverUrl = "";
 
 // Device identifier
-String deviceId = "АКБ №1";
+String deviceId = "";
 
 // Pin definitions
 const int voltagePin = 32;  // Analog input for voltage measurement
@@ -32,14 +32,13 @@ const float resistorR1 = 30000.0; // 30kΩ resistor
 const float resistorR2 = 7500.0;  // 7.5kΩ resistor
 const float vRef = 3.3;           // Reference voltage for ESP32 ADC
 const float adcMax = 4095.0;      // Maximum ADC value
-int numSamples = 100;             // Number of samples for averaging
-float corrFactor = 1.0468;        // Correction factor for calibration
+const int numSamples = 100;       // Number of samples for averaging
+const float corrFactor = 1.0468;  // Correction factor for calibration
 
-// Configuration parameters
-float critVoltage = 11.9;        // Critical voltage level (V)
-unsigned long infoInterval = 15; // Info messages interval, minutes
-unsigned long critInterval = 5;  // Critical messages interval, minutes
-unsigned long voltOnTime = 20;   // Voltmeter active, seconds
+float critVoltage = 0.0;            // Critical voltage level (V)
+unsigned long infoInterval = 0;     // Info messages interval, minutes
+unsigned long critInterval = 0;     // Critical messages interval, minutes
+const unsigned long voltOnTime = 0; // Voltmeter active, seconds
 
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
@@ -279,7 +278,7 @@ void loop()
   // If the button is pressed for more than 10 seconds reset config
   if (isButtonPressed && millis() - buttonPressStartTime >= 10000) // 10 seconds
   {
-    if (!isButtonHeld) // If it hasn't been done yet
+    if (!isButtonHeld)
     {
       isButtonHeld = true;
       Serial.println("Button held for 10 seconds, resetting configuration.");
