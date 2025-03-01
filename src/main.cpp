@@ -194,7 +194,7 @@ void setupWiFi()
   }
   else
   {
-    Serial.println("\nFailed to connect. Starting AP mode.");
+    Serial.println("\nFailed to connect to WiFi. Starting AP mode.");
     WiFi.mode(WIFI_MODE_AP);
     WiFi.softAP("ESP32-AP", "12345678");
 
@@ -218,7 +218,7 @@ void setup()
   loadConfig();
   setupWiFi();
 
-  // Send the first reference message
+  // Send the first info message
   float batteryVoltage = readBatteryVoltage();
   if (batteryVoltage <= critVoltage)
   {
