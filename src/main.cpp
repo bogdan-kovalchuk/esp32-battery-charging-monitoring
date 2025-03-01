@@ -143,7 +143,7 @@ void sendToServer(String msgType, float voltage)
 
 void handleRoot()
 {
-  String html = "<html><body><h1>ESP32 Web Server</h1>";
+  String html = "<html><head><meta charset='UTF-8'></head><body><h1>ESP32 Web Server</h1>";
   html += "<form action='/save' method='post'>";
   html += "SSID: <input type='text' name='ssid' value='" + ssid + "'><br>";
   html += "Password: <input type='password' name='password' value='" + password + "'><br>";
@@ -180,7 +180,6 @@ void setupWiFi()
   WiFi.begin(ssid.c_str(), password.c_str());
 
   unsigned long startAttemptTime = millis();
-
   while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 30000) // 30 seconds
   {
     delay(1000);
@@ -234,11 +233,7 @@ void setup()
 // Main loop
 void loop()
 {
-  if (WiFi.getMode() == WIFI_MODE_AP)
-  {
-    server.handleClient();
-  }
-  else if (WiFi.status() == WL_CONNECTED)
+  if (WiFi.status() == WL_CONNECTED)
   {
     float batteryVoltage = readBatteryVoltage();
     if (batteryVoltage > critVoltage && millis() - lastInfoTime >= infoIntervalMs)
@@ -252,6 +247,10 @@ void loop()
       lastCriticalTime = millis();
       sendToServer("ALERT", batteryVoltage);
     }
+  }
+  else if (WiFi.getMode() == WIFI_MODE_AP)
+  {
+    server.handleClient();
   }
 
   bool currentButtonState = digitalRead(buttonPin);
