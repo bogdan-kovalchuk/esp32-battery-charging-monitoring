@@ -200,7 +200,7 @@ void setupWiFi()
     Serial.print("IP Address in AP Mode: ");
     Serial.println(WiFi.softAPIP());
 
-    server.on("/", HTTP_GET, handleRoot);
+    server.on("/", handleRoot);
     server.on("/save", HTTP_POST, handleSave);
     server.begin();
   }
