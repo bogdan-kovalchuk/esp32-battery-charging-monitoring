@@ -1,9 +1,10 @@
 #include <Arduino.h>
-#include <WebServer.h>
 #include <WiFi.h>
+#include <WebServer.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <Preferences.h>
+#include <nvs_flash.h>
 
 // Configuration storage
 const char *namespaceName = "config";
@@ -17,7 +18,7 @@ String ssid = "";
 String password = "";
 
 // Server URL
-String serverUrl = "";
+String serverIP = "";
 
 // Device identifier
 String deviceId = "";
@@ -65,7 +66,7 @@ void saveConfig()
   config.clear();
   config.putString("ssid", ssid);
   config.putString("password", password);
-  config.putString("serverUrl", serverUrl);
+  config.putString("serverIP", serverIP);
   config.putString("deviceId", deviceId);
   config.putFloat("critVoltage", critVoltage);
   config.putULong("infoInterval", infoInterval);
@@ -86,8 +87,8 @@ void loadConfig()
   Serial.println("SSID: " + ssid);
   password = config.getString("password", "");
   Serial.println("Password: " + password);
-  serverUrl = config.getString("serverUrl", "");
-  Serial.println("Server URL: " + serverUrl);
+  serverIP = config.getString("serverIP", "");
+  Serial.println("Server URL: " + serverIP);
   deviceId = config.getString("deviceId", "");
   Serial.println("Device ID: " + deviceId);
   critVoltage = config.getFloat("critVoltage", 0.0);
@@ -120,6 +121,7 @@ void sendToServer(String msgType, float voltage)
   if (WiFi.status() == WL_CONNECTED)
   {
     HTTPClient http;
+    String serverUrl = "http://" + serverIP + ":5000/send";
     http.begin(serverUrl);
     http.addHeader("Content-Type", "application/json");
 
@@ -147,7 +149,7 @@ void handleRoot()
   html += "<form action='/save' method='post'>";
   html += "SSID: <input type='text' name='ssid' value='" + ssid + "'><br>";
   html += "Password: <input type='password' name='password' value='" + password + "'><br>";
-  html += "Server URL: <input type='text' name='serverUrl' value='" + serverUrl + "'><br>";
+  html += "Server URL: <input type='text' name='serverIP' value='" + serverIP + "'><br>";
   html += "Device ID: <input type='text' name='deviceId' value='" + deviceId + "'><br>";
   html += "Critical Voltage: <input type='number' name='critVoltage' value='" + String(critVoltage) + "'><br>";
   html += "Info Interval: <input type='number' name='infoInterval' value='" + String(infoInterval) + "'><br>";
@@ -161,7 +163,7 @@ void handleSave()
 {
   ssid = server.arg("ssid");
   password = server.arg("password");
-  serverUrl = server.arg("serverUrl");
+  serverIP = server.arg("serverIP");
   deviceId = server.arg("deviceId");
   critVoltage = server.arg("critVoltage").toFloat();
   infoInterval = server.arg("infoInterval").toInt();
@@ -283,17 +285,19 @@ void loop()
       Serial.println("Button held for 10 seconds, resetting configuration.");
 
       // Clear the configuration and set default values
+      nvs_flash_erase();
       config.begin(namespaceName, false);
-      config.clear();
       config.putString("ssid", "Starlink1721");
       config.putString("password", "Qwe123rty456");
-      config.putString("serverUrl", "http://141.144.245.187:5000/send");
-      config.putString("deviceId", "АКБ №1");
+      config.putString("serverIP", "141.144.245.187");
+      config.putString("deviceId", "BATT#1");
       config.putFloat("critVoltage", 11.9);
       config.putULong("infoInterval", 15);
       config.putULong("critInterval", 5);
       config.end();
-      Serial.println("Restarting ESP32 .....");
+
+      Serial.println("Restarting ESP32.....");
+
       ESP.restart();
     }
   }
