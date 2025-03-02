@@ -35,13 +35,11 @@ const float adcMax = 4095.0;      // Maximum ADC value
 const int numSamples = 100;       // Number of samples for averaging
 const float corrFactor = 1.0468;  // Correction factor for calibration
 
-float critVoltage = 0.0;            // Critical voltage level (V)
-unsigned long infoInterval = 0;     // Info messages interval, minutes
-unsigned long infoIntervalMs = 0;   // Info messages interval, milliseconds
-unsigned long critInterval = 0;     // Critical messages interval, minutes
-unsigned long critIntervalMs = 0;   // Critical messages interval, milliseconds
-const unsigned long voltOnTime = 20; // Voltmeter active, seconds
-unsigned long voltOnTimeMs = 0;     // Voltmeter active, milliseconds
+float critVoltage = 0.0;          // Critical voltage level (V)
+unsigned long infoInterval = 0;   // Info messages interval, minutes
+unsigned long infoIntervalMs = 0; // Info messages interval, milliseconds
+unsigned long critInterval = 0;   // Critical messages interval, minutes
+unsigned long critIntervalMs = 0; // Critical messages interval, milliseconds
 
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
@@ -55,6 +53,9 @@ bool isButtonHeld = false;
 // Convert time units
 unsigned long convertMinutesToMillis(unsigned long minutes) { return minutes * 60000; }
 unsigned long convertSecondsToMillis(unsigned long seconds) { return seconds * 1000; }
+
+const unsigned long voltOnTime = 20;                             // Voltmeter active, seconds
+unsigned long voltOnTimeMs = convertSecondsToMillis(voltOnTime); // Voltmeter active, milliseconds
 
 bool isKeyExists(const char *namespaceName, const char *keyName)
 {
@@ -122,7 +123,6 @@ void loadConfig()
   // Converted time intervals
   infoIntervalMs = convertMinutesToMillis(infoInterval);
   critIntervalMs = convertMinutesToMillis(critInterval);
-  voltOnTimeMs = convertSecondsToMillis(voltOnTime);
 }
 
 // Read battery voltage
@@ -303,7 +303,7 @@ void loop()
   }
 
   // If the button is pressed for more than 10 seconds reset config
-  if (isButtonPressed && millis() - buttonPressStartTime >= 10000) // 10 seconds
+  if (isButtonPressed && millis() - buttonPressStartTime >= 10*1000) // 10 seconds
   {
     if (!isButtonHeld)
     {
