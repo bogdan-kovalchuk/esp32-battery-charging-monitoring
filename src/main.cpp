@@ -40,7 +40,7 @@ unsigned long infoInterval = 0;     // Info messages interval, minutes
 unsigned long infoIntervalMs = 0;   // Info messages interval, milliseconds
 unsigned long critInterval = 0;     // Critical messages interval, minutes
 unsigned long critIntervalMs = 0;   // Critical messages interval, milliseconds
-const unsigned long voltOnTime = 0; // Voltmeter active, seconds
+const unsigned long voltOnTime = 20; // Voltmeter active, seconds
 unsigned long voltOnTimeMs = 0;     // Voltmeter active, milliseconds
 
 unsigned long lastInfoTime = 0;
