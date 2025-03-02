@@ -4,7 +4,6 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <Preferences.h>
-#include <nvs_flash.h>
 
 // Configuration storage
 const char *namespaceName = "config";
@@ -38,8 +37,11 @@ const float corrFactor = 1.0468;  // Correction factor for calibration
 
 float critVoltage = 0.0;            // Critical voltage level (V)
 unsigned long infoInterval = 0;     // Info messages interval, minutes
+unsigned long infoIntervalMs = 0;   // Info messages interval, milliseconds
 unsigned long critInterval = 0;     // Critical messages interval, minutes
+unsigned long critIntervalMs = 0;   // Critical messages interval, milliseconds
 const unsigned long voltOnTime = 0; // Voltmeter active, seconds
+unsigned long voltOnTimeMs = 0;     // Voltmeter active, milliseconds
 
 unsigned long lastInfoTime = 0;
 unsigned long lastCriticalTime = 0;
@@ -54,12 +56,27 @@ bool isButtonHeld = false;
 unsigned long convertMinutesToMillis(unsigned long minutes) { return minutes * 60000; }
 unsigned long convertSecondsToMillis(unsigned long seconds) { return seconds * 1000; }
 
-// Converted time intervals
-unsigned long infoIntervalMs = convertMinutesToMillis(infoInterval);
-unsigned long critIntervalMs = convertMinutesToMillis(critInterval);
-unsigned long voltOnTimeMs = convertSecondsToMillis(voltOnTime);
+bool isKeyExists(const char *namespaceName, const char *keyName)
+{
+  config.begin(namespaceName, true);
+  bool exists = config.isKey(keyName);
+  config.end();
+  return exists;
+}
 
-// Load and save configuration
+// Set default config
+void setDefaultConfig()
+{
+  ssid = "Starlink1721";
+  password = "Qwe123rty456";
+  serverIP = "141.144.245.187";
+  deviceId = "BATT#1";
+  critVoltage = 11.0;
+  infoInterval = 10;
+  critInterval = 5;
+}
+
+// Save configuration
 void saveConfig()
 {
   config.begin(namespaceName, false);
@@ -74,30 +91,38 @@ void saveConfig()
   config.end();
 }
 
+// Load configuration
 void loadConfig()
 {
-  config.begin(namespaceName, true);
-  if (!config.isKey("ssid"))
+  if (!isKeyExists(namespaceName, "ssid"))
   {
-    config.end();
+    setDefaultConfig();
     saveConfig();
-    config.begin(namespaceName, true);
   }
-  ssid = config.getString("ssid", "");
-  Serial.println("SSID: " + ssid);
-  password = config.getString("password", "");
-  Serial.println("Password: " + password);
-  serverIP = config.getString("serverIP", "");
-  Serial.println("Server URL: " + serverIP);
-  deviceId = config.getString("deviceId", "");
-  Serial.println("Device ID: " + deviceId);
-  critVoltage = config.getFloat("critVoltage", 0.0);
-  Serial.println("Critical Voltage: " + String(critVoltage));
-  infoInterval = config.getULong("infoInterval", 0);
-  Serial.println("Info Interval: " + String(infoInterval));
-  critInterval = config.getULong("critInterval", 0);
-  Serial.println("Critical Interval: " + String(critInterval));
-  config.end();
+  else
+  {
+    config.begin(namespaceName, true);
+    ssid = config.getString("ssid", "");
+    Serial.println("SSID: " + ssid);
+    password = config.getString("password", "");
+    Serial.println("Password: " + password);
+    serverIP = config.getString("serverIP", "");
+    Serial.println("Server URL: " + serverIP);
+    deviceId = config.getString("deviceId", "");
+    Serial.println("Device ID: " + deviceId);
+    critVoltage = config.getFloat("critVoltage", 0.0);
+    Serial.println("Critical Voltage: " + String(critVoltage));
+    infoInterval = config.getULong("infoInterval", 0);
+    Serial.println("Info Interval: " + String(infoInterval));
+    critInterval = config.getULong("critInterval", 0);
+    Serial.println("Critical Interval: " + String(critInterval));
+    config.end();
+  }
+
+  // Converted time intervals
+  infoIntervalMs = convertMinutesToMillis(infoInterval);
+  critIntervalMs = convertMinutesToMillis(critInterval);
+  voltOnTimeMs = convertSecondsToMillis(voltOnTime);
 }
 
 // Read battery voltage
@@ -145,13 +170,13 @@ void sendToServer(String msgType, float voltage)
 
 void handleRoot()
 {
-  String html = "<html><head><meta charset='UTF-8'></head><body><h1>ESP32 Web Server</h1>";
+  String html = "<html><head><meta charset='UTF-8'></head><body><h1>Battery monitor cofig</h1>";
   html += "<form action='/save' method='post'>";
   html += "SSID: <input type='text' name='ssid' value='" + ssid + "'><br>";
-  html += "Password: <input type='password' name='password' value='" + password + "'><br>";
+  html += "Password: <input type='text' name='password' value='" + password + "'><br>";
   html += "Server URL: <input type='text' name='serverIP' value='" + serverIP + "'><br>";
   html += "Device ID: <input type='text' name='deviceId' value='" + deviceId + "'><br>";
-  html += "Critical Voltage: <input type='number' name='critVoltage' value='" + String(critVoltage) + "'><br>";
+  html += "Critical Voltage: <input type='number' name='critVoltage' value='" + String(critVoltage) + "' step='0.1'><br>";
   html += "Info Interval: <input type='number' name='infoInterval' value='" + String(infoInterval) + "'><br>";
   html += "Critical Interval: <input type='number' name='critInterval' value='" + String(critInterval) + "'><br>";
   html += "<input type='submit' value='Save Config'></form></body></html>";
@@ -170,6 +195,7 @@ void handleSave()
   critInterval = server.arg("critInterval").toInt();
 
   saveConfig();
+
   server.send(200, "text/html", "<html><body><h1>Config Saved! Restarting...</h1></body></html>");
   delay(2000);
   Serial.println("Restarting ESP32 .....");
@@ -285,19 +311,10 @@ void loop()
       Serial.println("Button held for 10 seconds, resetting configuration.");
 
       // Clear the configuration and set default values
-      nvs_flash_erase();
-      config.begin(namespaceName, false);
-      config.putString("ssid", "Starlink1721");
-      config.putString("password", "Qwe123rty456");
-      config.putString("serverIP", "141.144.245.187");
-      config.putString("deviceId", "BATT#1");
-      config.putFloat("critVoltage", 11.9);
-      config.putULong("infoInterval", 15);
-      config.putULong("critInterval", 5);
-      config.end();
+      setDefaultConfig();
+      saveConfig();
 
       Serial.println("Restarting ESP32.....");
-
       ESP.restart();
     }
   }
