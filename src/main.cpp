@@ -68,13 +68,13 @@ bool isKeyExists(const char *namespaceName, const char *keyName)
 // Set default config
 void setDefaultConfig()
 {
-  ssid = "Starlink1721";
+  ssid = "Starlink172";
   password = "Qwe123rty456";
   serverIP = "141.144.245.187";
   deviceId = "BATT#1";
   critVoltage = 11.0;
-  infoInterval = 10;
-  critInterval = 5;
+  infoInterval = 300;
+  critInterval = 120;
 }
 
 // Save configuration
@@ -137,7 +137,7 @@ float readBatteryVoltage()
   float rawADC = sumADC / (float)numSamples;
   float voltageOut = (rawADC / adcMax) * vRef;
   float batteryVoltage = voltageOut * (1 + resistorR1 / resistorR2);
-  return batteryVoltage * corrFactor;
+  return corrFactor * roundf(batteryVoltage * 10) / 10.0;
 }
 
 // Send voltage data to the server
@@ -258,6 +258,8 @@ void setup()
   }
 }
 
+////// Неслати коли напруга нуль!!!
+
 // Main loop
 void loop()
 {
@@ -303,7 +305,7 @@ void loop()
   }
 
   // If the button is pressed for more than 10 seconds reset config
-  if (isButtonPressed && millis() - buttonPressStartTime >= 10*1000) // 10 seconds
+  if (isButtonPressed && millis() - buttonPressStartTime >= 10 * 1000) // 10 seconds
   {
     if (!isButtonHeld)
     {
