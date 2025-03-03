@@ -245,7 +245,7 @@ void setup()
   setupWiFi();
 
   // Send the first info message
-  float batteryVoltage = readBatteryVoltage();
+  float batteryVoltage = roundf(readBatteryVoltage() * 10) / 10.0;
   if (batteryVoltage <= critVoltage)
   {
     sendToServer("ALERT", batteryVoltage);
@@ -263,7 +263,7 @@ void loop()
 {
   if (WiFi.status() == WL_CONNECTED)
   {
-    float batteryVoltage = readBatteryVoltage();
+    float batteryVoltage = roundf(readBatteryVoltage() * 10) / 10.0;
     if (batteryVoltage > critVoltage && millis() - lastInfoTime >= infoIntervalMs)
     {
       lastInfoTime = millis();
@@ -303,7 +303,7 @@ void loop()
   }
 
   // If the button is pressed for more than 10 seconds reset config
-  if (isButtonPressed && millis() - buttonPressStartTime >= 10*1000) // 10 seconds
+  if (isButtonPressed && millis() - buttonPressStartTime >= 10 * 1000) // 10 seconds
   {
     if (!isButtonHeld)
     {
