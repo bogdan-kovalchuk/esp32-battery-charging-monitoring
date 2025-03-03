@@ -245,7 +245,7 @@ void setup()
   setupWiFi();
 
   // Send the first info message
-  float batteryVoltage = readBatteryVoltage();
+  float batteryVoltage = roundf(readBatteryVoltage() * 10) / 10.0;
   if (batteryVoltage <= critVoltage)
   {
     sendToServer("ALERT", batteryVoltage);
@@ -265,7 +265,7 @@ void loop()
 {
   if (WiFi.status() == WL_CONNECTED)
   {
-    float batteryVoltage = readBatteryVoltage();
+    float batteryVoltage = roundf(readBatteryVoltage() * 10) / 10.0;
     if (batteryVoltage > critVoltage && millis() - lastInfoTime >= infoIntervalMs)
     {
       lastInfoTime = millis();
