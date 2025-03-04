@@ -258,24 +258,25 @@ void setup()
   }
 }
 
-////// Неслати коли напруга нуль!!!
-
 // Main loop
 void loop()
 {
   if (WiFi.status() == WL_CONNECTED)
   {
     float batteryVoltage = roundf(readBatteryVoltage() * 10) / 10.0;
-    if (batteryVoltage > critVoltage && millis() - lastInfoTime >= infoIntervalMs)
+    if (batteryVoltage > 0)
     {
-      lastInfoTime = millis();
-      sendToServer("INFO", batteryVoltage);
-    }
+      if (batteryVoltage > critVoltage && millis() - lastInfoTime >= infoIntervalMs)
+      {
+        lastInfoTime = millis();
+        sendToServer("INFO", batteryVoltage);
+      }
 
-    if (batteryVoltage <= critVoltage && millis() - lastCriticalTime >= critIntervalMs)
-    {
-      lastCriticalTime = millis();
-      sendToServer("ALERT", batteryVoltage);
+      if (batteryVoltage <= critVoltage && millis() - lastCriticalTime >= critIntervalMs)
+      {
+        lastCriticalTime = millis();
+        sendToServer("ALERT", batteryVoltage);
+      }
     }
   }
   else if (WiFi.getMode() == WIFI_MODE_AP)
