@@ -124,10 +124,13 @@ def send_message():
     voltage = data["voltage"]
 
     if msg_type == "INFO":
-        message = f"📋 {device_id}: Напруга {voltage} Вольт."
+        message = f"📋 {device_id}: Напруга {voltage} В."
     elif msg_type == "ALERT":
         critical_voltage = data.get("critical_voltage")
-        message = f"🚨 {device_id}: Напруга {voltage} Вольт менше {critical_voltage} Вольт. Необхідно зарядити АКБ."
+        if voltage < critical_voltage:
+            message = f"🚨 {device_id}: Поточна напруга {voltage} В менше критичної {critical_voltage} В. Необхідно зарядити АКБ."
+        elif voltage == critical_voltage:
+            message = f"⚠️ {device_id}: Поточна напруга дорівнює критичній {critical_voltage} В. Необхідно зарядити АКБ."
     else:
         logging.warning(f"Unknown msg_type: {msg_type}")
         return {"error": "Invalid msg_type, expected 'INFO' or 'ALERT'"}, 400
