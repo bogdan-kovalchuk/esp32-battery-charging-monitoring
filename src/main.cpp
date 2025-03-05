@@ -246,15 +246,18 @@ void setup()
 
   // Send the first info message
   float batteryVoltage = roundf(readBatteryVoltage() * 10) / 10.0;
-  if (batteryVoltage <= critVoltage)
+  if (batteryVoltage > 0)
   {
-    sendToServer("ALERT", batteryVoltage);
-    lastCriticalTime = millis();
-  }
-  else
-  {
-    sendToServer("INFO", batteryVoltage);
-    lastInfoTime = millis();
+    if (batteryVoltage <= critVoltage)
+    {
+      sendToServer("ALERT", batteryVoltage);
+      lastCriticalTime = millis();
+    }
+    else
+    {
+      sendToServer("INFO", batteryVoltage);
+      lastInfoTime = millis();
+    }
   }
 }
 
