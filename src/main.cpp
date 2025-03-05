@@ -222,7 +222,7 @@ void setupWiFi()
   {
     Serial.println("\nFailed to connect to WiFi. Starting AP mode.");
     WiFi.mode(WIFI_MODE_AP);
-    WiFi.softAP("ESP32-AP", "12345678");
+    WiFi.softAP("BCM-AP", "12345678");
 
     Serial.print("IP Address in AP Mode: ");
     Serial.println(WiFi.softAPIP());
