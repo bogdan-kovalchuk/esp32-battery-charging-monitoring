@@ -106,7 +106,7 @@ void loadConfig()
     ssid = config.getString("ssid", "");
     Serial.println("SSID: " + ssid);
     password = config.getString("password", "");
-    Serial.println("Password: " + password);
+    Serial.println("Password: ************");
     serverIP = config.getString("serverIP", "");
     Serial.println("Server URL: " + serverIP);
     deviceId = config.getString("deviceId", "");
