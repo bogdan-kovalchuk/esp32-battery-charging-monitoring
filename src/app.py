@@ -1,4 +1,5 @@
 import os
+import hmac
 import time
 import subprocess
 import logging
@@ -20,10 +21,12 @@ SIGNAL_GROUP_ID = os.getenv("SIGNAL_GROUP_ID")
 SIGNAL_USER = os.getenv("SIGNAL_USER")
 FLASK_HOST = os.getenv("FLASK_HOST", "0.0.0.0")
 FLASK_PORT = int(os.getenv("FLASK_PORT", "5000"))
+API_TOKEN = os.getenv("API_TOKEN", "change-me-to-random-string")
 
 # Error counters for health monitoring
 failed_send_count = 0
 failed_receive_count = 0
+counter_lock = threading.Lock()
 
 # Logging configuration
 logging.basicConfig(
@@ -47,10 +50,11 @@ def process_queue():
         try:
             subprocess.run(cmd, check=True, text=True, capture_output=True)
             logging.info("Message sent successfully")
-            time.sleep(2)  # Delay between message sends
+            time.sleep(2)
         except subprocess.CalledProcessError as e:
-            global failed_send_count
-            failed_send_count += 1
+            with counter_lock:
+                global failed_send_count
+                failed_send_count += 1
             logging.error(f"Error executing signal-cli: {e}")
         finally:
             message_queue.task_done()
@@ -108,6 +112,12 @@ def is_update_available(local_version, latest_version):
 def send_message():
     """Handles POST requests to send messages via Signal."""
     global failed_send_count
+
+    auth = request.headers.get("Authorization", "")
+    expected = f"Bearer {API_TOKEN}"
+    if not hmac.compare_digest(auth, expected):
+        return {"error": "Unauthorized"}, 401
+
     if not request.is_json:
         logging.warning("Received non-JSON data.")
         failed_send_count += 1
