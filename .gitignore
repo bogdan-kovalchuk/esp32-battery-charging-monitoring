@@ -4,7 +4,4 @@
 .vscode/launch.json
 .vscode/ipch
 .vscode
-include
-lib
-test
-platformio.ini
+.env
