@@ -1,0 +1,22 @@
+[project]
+name = "battery-monitor-server"
+version = "1.0.0"
+description = "Flask backend relaying ESP32 battery readings to a Signal group"
+requires-python = ">=3.10"
+# Single source of truth for dependencies is requirements.txt, which is what
+# the deployment docs and systemd unit install from.
+dynamic = ["dependencies"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["battery_monitor"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
