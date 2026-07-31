@@ -1,285 +1,145 @@
 # ESP32 Battery Charging Monitor
 
-12 V lead-acid battery voltage monitor on ESP32 with Signal messenger
-alerts. Two components: ESP32 firmware and Flask backend on a VPS.
+An ESP32-based 12 V battery voltage monitor. The firmware measures battery
+voltage, while a Flask backend delivers notifications to a Signal group through
+`signal-cli`.
 
+```text
+ESP32 -- HTTP or HTTPS --> Flask -- SQLite outbox --> signal-cli --> Signal group
 ```
-[ESP32 + voltage divider] --HTTP POST--> [Flask server] --signal-cli--> [Signal group]
-```
+
+## Features
+
+- Voltage sampling every 60 seconds
+- Immediate `ALERT` when voltage crosses below the critical threshold
+- Immediate `INFO` when voltage recovers
+- Separate reminder intervals for INFO and ALERT states
+- Fallback WiFi access point with a web configuration form
+- CRC-protected ESP32 configuration stored in alternating NVS slots
+- Persistent SQLite outbox with retries and `event_id` deduplication
+- Optional HTTP or HTTPS transport
+- Health check and Prometheus metrics
+
+## Project structure
+
+| Path | Purpose |
+|---|---|
+| `firmware/` | PlatformIO/Arduino firmware for ESP32 |
+| `server/` | Flask API and signal-cli integration |
+| `firmware/test/` | Host-side firmware logic tests |
+| `server/tests/` | Backend tests |
 
 ## Hardware
 
-### BOM
-
-- ESP32 DevKit V1
-- 12 V lead-acid battery
-- Resistor 30 kΩ (R1) + 7.5 kΩ (R2) — voltage divider
-- NPN transistor (2N2222) or N-MOSFET — voltmeter enable
-- Momentary push button
-- 10 kΩ resistor — pull-down for GPIO 34
-
-### Wiring
-
-| Component | ESP32 pin | Notes |
+| Signal | ESP32 pin | Notes |
 |---|---:|---|
-| Voltage divider output | GPIO 32 | ADC input, 0–3 V range |
-| Button | GPIO 34 | To 3.3 V, **10 kΩ pull-down to GND required** |
-| Voltmeter enable | GPIO 4 | Transistor base/gate via 1 kΩ |
+| Voltage divider | GPIO 32 | ADC input, 30 kOhm / 7.5 kOhm |
+| Button | GPIO 34 | Requires an external 10 kOhm pull-down |
+| Divider/gauge enable | GPIO 4 | Through a transistor and 1 kOhm resistor |
 
-> GPIO 34 is input-only with no internal pull-down.
-> External 10 kΩ resistor between GPIO 34 and GND is mandatory.
-
-### Voltage divider
-
-```
-  12V BAT ──[30 kΩ]──┬──[7.5 kΩ]── GND
-                      │
-                   GPIO 32
-```
-
-Scales 0–15 V down to 0–3 V for ESP32 ADC. Firmware averages 100 samples
-per reading. Calibration factor `CORR_FACTOR = 1.0468` in `include/app_config.h`.
-
----
+The ADC calibration factor is `CORR_FACTOR` in
+`firmware/include/app_config.h`.
 
 ## Firmware
 
-### Build and upload
+Create the configuration file:
 
-```powershell
-pio run -e esp32dev -t upload
+```bash
+cp firmware/include/secrets.h.example firmware/include/secrets.h
+```
+
+Set the WiFi credentials, backend host, API token, and passwords. `secrets.h`
+is ignored by Git. Its values provide the initial defaults; after the first
+boot, runtime configuration is stored in NVS.
+
+Build and upload:
+
+```bash
+pio run -d firmware -e esp32dev
+pio run -d firmware -e esp32dev -t upload
 pio device monitor -b 115200
 ```
 
-### Configuration
+### HTTP and HTTPS
 
-Edit `include/secrets.h`:
+The configuration template uses HTTP by default:
 
-| Define | Description | Example |
-|---|---|---|
-| `WIFI_SSID` | WiFi network name | `MyNetwork` |
-| `WIFI_PASSWORD` | WiFi password | `secret123` |
-| `SERVER_IP` | Server IP or hostname | `141.144.245.187` |
-| `SERVER_PORT` | Flask backend port | `5000` |
-| `AP_SSID` | Access point name | `BCM-AP` |
-| `AP_PASSWORD` | Access point password | `12345678` |
-| `DEVICE_ID` | Device identifier | `BATT#1` |
-| `API_TOKEN` | Bearer token for server | `random-string` |
-| `WEB_PASSWORD` | Web UI password | `admin` |
-| `CRIT_VOLTAGE` | Critical voltage threshold (V) | `11.0` |
-| `INFO_INTERVAL` | INFO message interval (min) | `300` |
-| `CRIT_INTERVAL` | ALERT message interval (min) | `120` |
-
-### WiFi modes
-
-**STA mode** (default): ESP32 connects to the specified WiFi network.
-Auto-reconnect is enabled. If connection is lost, automatic reconnect
-attempts are made.
-
-**AP mode** (fallback): If WiFi is unavailable for 30 seconds,
-ESP32 creates access point `BCM-AP` (IP `192.168.4.1`).
-Open `http://192.168.4.1` for web configuration.
-
-### Web configuration UI
-
-Available in both AP and STA mode on port 80.
-
-- **Login:** `admin`
-- **Password:** `WEB_PASSWORD` value from `secrets.h`
-- Basic HTTP Authentication
-- XSS protection (HTML escaping)
-
-Configurable parameters: SSID, Password, Server IP, Device ID, API Token,
-Web Password, Critical Voltage, Info/Critical Intervals.
-
-After saving, the device restarts with new configuration.
-Settings are stored in NVS (Preferences) and survive reboots.
-
-### Button
-
-| Action | Behavior |
-|---|---|
-| Press | Activates voltmeter for 20 seconds |
-| Hold 10 s | Factory reset — reverts to `secrets.h` defaults |
-
-### Watchdog Timer
-
-60-second task watchdog. Automatic reboot on hang.
-
-### HTTP communication
-
-ESP32 sends JSON via HTTP POST to the server:
-
-```json
-{"device_id": "BATT#1", "msg_type": "INFO", "voltage": 12.4}
+```cpp
+#define SERVER_PORT 5000
+#define SERVER_USE_TLS 0
+#define SERVER_ROOT_CA ""
 ```
 
-```json
-{"device_id": "BATT#1", "msg_type": "ALERT", "voltage": 10.8, "critical_voltage": 11.0}
+Existing private `secrets.h` files without the TLS macros also continue to use
+HTTP.
+
+To enable HTTPS, select the TLS port and provide the PEM CA root:
+
+```cpp
+#define SERVER_PORT 443
+#define SERVER_USE_TLS 1
+#define SERVER_ROOT_CA \
+  "-----BEGIN CERTIFICATE-----\n" \
+  "...\n" \
+  "-----END CERTIFICATE-----\n"
 ```
 
-INFO is sent when voltage is above critical threshold.
-ALERT is sent when voltage is at or below critical threshold.
+The CA root is required only when HTTPS is enabled.
 
-- Bearer token authentication
-- 3 retry attempts with 1 s delay between retries
+### Fallback access point
 
----
+If the ESP32 cannot connect to WiFi within 30 seconds, it starts the configured
+fallback access point while continuing STA connection attempts in the
+background.
 
-## Server
+1. Connect to the network configured by `AP_SSID`.
+2. Open `http://192.168.4.1/`.
+3. Sign in with `WEB_USER` and `WEB_PASSWORD`.
+4. Update the WiFi, backend, threshold, and interval settings.
+5. Save the configuration.
 
-### Requirements
+The fallback access point stops after the STA connection remains stable.
+Holding the button for 10 seconds restores the compile-time defaults.
 
-Any Linux VPS with a public IP. Recommendations:
+## Backend
 
-| Provider | Tier | Spec | Price |
-|---|---|---|---|
-| Oracle Cloud | Always Free | 4 vCPU / 24 GB RAM / 200 GB | Free |
-| Hetzner | CX22 | 2 vCPU / 4 GB RAM | ~4 EUR/mo |
-| DigitalOcean | Basic | 1 vCPU / 1 GB RAM | ~6 USD/mo |
-
-Minimum config for this project: 1 vCPU / 512 MB RAM.
-
-### System packages
+The backend requires Python 3.10+ and an installed `signal-cli`. Follow the
+official [signal-cli README](https://github.com/AsamK/signal-cli) for current
+installation and account setup instructions.
 
 ```bash
-sudo apt update && sudo apt install -y python3 python3-pip python3-venv openjdk-17-jre nginx
-```
-
-### signal-cli setup
-
-```bash
-SIGNAL_CLI_VERSION="0.13.5"
-wget "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux.tar.gz"
-tar xf signal-cli-*.tar.gz
-sudo mv signal-cli-* /opt/signal-cli
-sudo ln -s /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli
-```
-
-Register a phone number:
-
-```bash
-signal-cli -u +380XXXXXXXXX register
-signal-cli -u +380XXXXXXXXX verify CODE_FROM_SMS
-```
-
-Create a Signal group and add the number:
-
-```bash
-signal-cli -u +380XXXXXXXXX updateGroup -n "Battery Monitor" -m +380XXXXXXXXX
-```
-
-### Backend setup
-
-```bash
-git clone https://github.com/bogdan-kovalchuk/esp32-battery-charging-monitoring.git
-cd esp32-battery-charging-monitoring
-python3 -m venv venv
-source venv/bin/activate
+cd server
+python3 -m venv .venv
+. .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
 ```
 
-Create `.env` in project root:
+Set at least these values:
 
-```
-SIGNAL_GROUP_ID=your-signal-group-id
+```dotenv
 SIGNAL_USER=+380XXXXXXXXX
-API_TOKEN=same-token-as-in-secrets-h
-FLASK_HOST=0.0.0.0
-FLASK_PORT=5000
+SIGNAL_GROUP_ID=group-id
+API_TOKEN=same-token-as-in-firmware
 ```
 
-> Get `SIGNAL_GROUP_ID`:
-> `signal-cli -u +380XXXXXXXXX listGroups`
-
-### Systemd service
+Start the backend:
 
 ```bash
-sudo nano /etc/systemd/system/battery-monitor.service
+python -m battery_monitor.wsgi
 ```
 
-```ini
-[Unit]
-Description=Battery Monitor Backend
-After=network.target
-
-[Service]
-Type=simple
-WorkingDirectory=/opt/esp32-battery-charging-monitoring
-ExecStart=/opt/esp32-battery-charging-monitoring/venv/bin/python src/app.py
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable --now battery-monitor
-```
-
-### Nginx reverse proxy
-
-```bash
-sudo nano /etc/nginx/sites-available/battery-monitor
-```
-
-```nginx
-server {
-    listen 80;
-    server_name battery.yourdomain.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-```bash
-sudo ln -s /etc/nginx/sites-available/battery-monitor /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
-```
-
-If using Nginx, set hostname in `secrets.h` instead of IP:
-
-```c
-#define SERVER_IP "battery.yourdomain.com"
-```
-
-### Firewall
-
-```bash
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw enable
-```
-
----
+Before opening the socket, the backend verifies the signal-cli binary, account,
+and target group. Accepted events are persisted in
+`server/.data/outbox.sqlite3` and then sent sequentially through signal-cli.
 
 ## API
 
-| Endpoint | Method | Auth | Description |
-|---|---|---|---|
-| `/send` | POST | `Bearer <token>` | Accepts data from ESP32 |
-| `/signal-cli/version` | GET | — | signal-cli version info |
-| `/metrics` | GET | — | Prometheus-style metrics |
-| `/healthcheck` | GET | — | Server health status |
-
-### POST /send
+`POST /send` requires `Authorization: Bearer <API_TOKEN>`.
 
 ```json
 {
-  "device_id": "BATT#1",
-  "msg_type": "INFO",
-  "voltage": 12.4
-}
-```
-
-```json
-{
+  "event_id": "device-boot-sequence",
   "device_id": "BATT#1",
   "msg_type": "ALERT",
   "voltage": 10.8,
@@ -287,18 +147,40 @@ sudo ufw enable
 }
 ```
 
----
+| Status | Meaning |
+|---:|---|
+| `202` | Event persisted or previously accepted |
+| `400` | Invalid payload |
+| `401` | Invalid API token |
+| `413` | Request body too large |
+| `503` | Outbox full; retry with the same `event_id` |
 
-## Testing
+Additional endpoints:
 
-```powershell
-# Backend
-pip install pytest
-pytest test/test_app.py
+- `GET /healthcheck`
+- `GET /metrics`
+- `GET /signal-cli/version`
 
-# Firmware
-pio test -e native
+## Tests
+
+```bash
+pio test -d firmware -e native
+pio run -d firmware -e esp32dev-ci
+
+cd server
+python -m pytest
 ```
+
+`esp32dev-ci` uses dummy credentials for compile checks only. Upload firmware
+with the `esp32dev` environment and your own `secrets.h`.
+
+## Limitations
+
+- HTTP does not encrypt the API token; enable HTTPS on untrusted networks.
+- The ESP32 configuration portal uses HTTP.
+- ESP32 NVS is not encrypted.
+- Devices using the same `API_TOKEN` share access. Use individual tokens when
+  separate device identities are required.
 
 ## License
 

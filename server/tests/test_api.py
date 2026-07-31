@@ -208,9 +208,9 @@ def test_duplicate_event_is_accepted_once(client, auth, fake_cli, sender):
 
 
 def test_unicode_device_id_round_trips(client, auth, fake_cli, sender):
-    post_send(client, auth, device_id="Батарея №1", msg_type="INFO", voltage=12.5)
+    post_send(client, auth, device_id="Battery café", msg_type="INFO", voltage=12.5)
     assert sender.wait_idle()
-    assert fake_cli.sent == ["Батарея №1: Voltage 12.5 V."]
+    assert fake_cli.sent == ["Battery café: Voltage 12.5 V."]
 
 
 # -- error handlers ----------------------------------------------------------
