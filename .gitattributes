@@ -1,0 +1,10 @@
+# Normalize line endings to LF in the repository regardless of local
+# core.autocrlf. Without this, a checkout on a machine without autocrlf=true
+# commits CRLF blobs and every file shows up as a whole-file diff.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.docx binary
+*.bin binary
+*.hex binary
