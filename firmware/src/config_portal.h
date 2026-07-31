@@ -1,7 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "device_config.h"
 
 void webserverInit(DeviceConfig &cfg);
 void webserverHandle();
-bool webserverAPActive();
