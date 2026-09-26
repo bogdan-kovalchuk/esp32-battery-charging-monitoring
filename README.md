@@ -11,7 +11,7 @@ ESP32 -- HTTP or HTTPS --> Flask -- SQLite outbox --> signal-cli --> Signal grou
 ## Features
 
 - Voltage sampling every 60 seconds
-- Immediate `ALERT` when voltage crosses below the critical threshold
+- Immediate `ALERT` when voltage drops to or below the critical threshold
 - Immediate `INFO` when voltage recovers
 - Separate reminder intervals for INFO and ALERT states
 - Fallback WiFi access point with a web configuration form
@@ -157,9 +157,9 @@ and target group. Accepted events are persisted in
 
 Additional endpoints:
 
-- `GET /healthcheck`
-- `GET /metrics`
-- `GET /signal-cli/version`
+- `GET /healthcheck` – public unless `HEALTHCHECK_REQUIRE_AUTH=true`
+- `GET /metrics` – requires the bearer token unless `METRICS_REQUIRE_AUTH=false`
+- `GET /signal-cli/version` – follows the `/metrics` setting
 
 ## Tests
 
@@ -170,6 +170,9 @@ pio run -d firmware -e esp32dev-ci
 cd server
 python -m pytest
 ```
+
+On Windows, `firmware/scripts/native_toolchain.py` lets `pio test -e native`
+use the MinGW toolchain bundled with PlatformIO when no `gcc` is on `PATH`.
 
 `esp32dev-ci` uses dummy credentials for compile checks only. Upload firmware
 with the `esp32dev` environment and your own `secrets.h`.
