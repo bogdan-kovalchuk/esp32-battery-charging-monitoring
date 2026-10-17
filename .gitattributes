@@ -8,3 +8,7 @@
 *.docx binary
 *.bin binary
 *.hex binary
+
+# KiCad hardware: store bytes as exported (CRLF Gerbers, STEP, board) so the
+# production manifest.sha256 still matches in a clone.
+hardware/** -text

@@ -38,3 +38,16 @@ AGENTS.md
 secrets.h
 secrets.h.*
 !secrets.h.example
+
+# KiCad hardware: design files and the production package are tracked; step
+# records, local history, per-user state and check outputs stay local.
+hardware/*/evidence/
+hardware/*/review/
+hardware/**/.history/
+hardware/**/*-backups/
+hardware/**/.konnect/
+hardware/**/*.kicad_prl
+hardware/**/*.lck
+hardware/**/fp-info-cache
+hardware/*/*-drc.json
+hardware/*/*-erc.json
