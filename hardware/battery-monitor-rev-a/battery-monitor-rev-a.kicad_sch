@@ -1,0 +1,946 @@
+(kicad_sch
+	(version 20250610)
+	(generator "konnect")
+	(generator_version "10.0")
+	(uuid "b360fe26-3fda-4aa8-bae7-86b994bfee8d")
+	(paper "A4")
+	(lib_symbols)
+	(wire
+		(pts
+			(xy 152.4 43.18)
+			(xy 154.94 43.18)
+		)
+		(uuid "ad64b934-34e0-4e4c-afcc-1a5bafd26df9")
+	)
+	(wire
+		(pts
+			(xy 152.4 45.72)
+			(xy 154.94 45.72)
+		)
+		(uuid "dd834c6b-0edd-4207-abf8-884b2bd8c239")
+	)
+	(wire
+		(pts
+			(xy 152.4 48.26)
+			(xy 154.94 48.26)
+		)
+		(uuid "742867b6-0a44-4d18-a385-f1c779369637")
+	)
+	(wire
+		(pts
+			(xy 152.4 50.8)
+			(xy 154.94 50.8)
+		)
+		(uuid "8dac4166-0572-4a6c-bfee-a095ce66936b")
+	)
+	(wire
+		(pts
+			(xy 152.4 53.34)
+			(xy 154.94 53.34)
+		)
+		(uuid "1cf38219-2f29-43bd-8688-31ce6a9f72c0")
+	)
+	(wire
+		(pts
+			(xy 152.4 55.88)
+			(xy 154.94 55.88)
+		)
+		(uuid "b5461763-7126-4341-97ed-0b2b927172b3")
+	)
+	(wire
+		(pts
+			(xy 152.4 58.42)
+			(xy 154.94 58.42)
+		)
+		(uuid "962cf26d-8774-4a59-a5b3-0fc454f5f41f")
+	)
+	(wire
+		(pts
+			(xy 152.4 66.04)
+			(xy 154.94 66.04)
+		)
+		(uuid "254f4ee0-61e1-48c0-9333-79430db9b4e1")
+	)
+	(wire
+		(pts
+			(xy 152.4 68.58)
+			(xy 154.94 68.58)
+		)
+		(uuid "30be1596-12a1-49ef-94d2-30439723669a")
+	)
+	(wire
+		(pts
+			(xy 152.4 71.12)
+			(xy 154.94 71.12)
+		)
+		(uuid "fbcdabcb-8511-492d-b5fd-27cd98b2d68e")
+	)
+	(wire
+		(pts
+			(xy 152.4 73.66)
+			(xy 154.94 73.66)
+		)
+		(uuid "93f8bf5c-b6a1-4e02-935d-2b16959638ba")
+	)
+	(wire
+		(pts
+			(xy 152.4 76.2)
+			(xy 154.94 76.2)
+		)
+		(uuid "6890aa0e-1bcc-4d95-95d7-1f57e16ead4b")
+	)
+	(wire
+		(pts
+			(xy 205.74 83.82)
+			(xy 203.2 83.82)
+		)
+		(uuid "7cc29500-8a2a-4140-a570-cfeabe2673cb")
+	)
+	(wire
+		(pts
+			(xy 205.74 86.36)
+			(xy 203.2 86.36)
+		)
+		(uuid "e0faaee1-898c-4a00-98cf-dca1a4d432d4")
+	)
+	(wire
+		(pts
+			(xy 205.74 88.9)
+			(xy 203.2 88.9)
+		)
+		(uuid "c3daa223-5c5b-4479-85d0-2b29b77210f0")
+	)
+	(wire
+		(pts
+			(xy 205.74 91.44)
+			(xy 203.2 91.44)
+		)
+		(uuid "c9d2a1ba-0011-4b0f-8294-75f41c305567")
+	)
+	(wire
+		(pts
+			(xy 205.74 93.98)
+			(xy 203.2 93.98)
+		)
+		(uuid "975ebb6a-9bea-4bc9-b058-b30f00cb1e03")
+	)
+	(wire
+		(pts
+			(xy 205.74 96.52)
+			(xy 203.2 96.52)
+		)
+		(uuid "5bdc02c6-77ee-4361-9009-3b065b48353d")
+	)
+	(wire
+		(pts
+			(xy 205.74 99.06)
+			(xy 203.2 99.06)
+		)
+		(uuid "c97aa406-46f7-4510-9039-847f08970ecc")
+	)
+	(wire
+		(pts
+			(xy 205.74 124.46)
+			(xy 203.2 124.46)
+		)
+		(uuid "1c2a8203-f0ec-47dc-b833-51d3f51e2921")
+	)
+	(wire
+		(pts
+			(xy 205.74 127)
+			(xy 203.2 127)
+		)
+		(uuid "12d2c638-c3f7-4018-bb1f-231086df5144")
+	)
+	(wire
+		(pts
+			(xy 205.74 129.54)
+			(xy 203.2 129.54)
+		)
+		(uuid "79b3c349-5cf6-4945-b55a-c2d4217e6683")
+	)
+	(wire
+		(pts
+			(xy 205.74 132.08)
+			(xy 203.2 132.08)
+		)
+		(uuid "4ce8472f-00d7-4241-95b3-29fbcaa9cc78")
+	)
+	(wire
+		(pts
+			(xy 205.74 134.62)
+			(xy 203.2 134.62)
+		)
+		(uuid "ba369cd6-ee6e-4fa6-b0c4-d63e3faaeabc")
+	)
+	(wire
+		(pts
+			(xy 76.2 45.72)
+			(xy 78.74 45.72)
+		)
+		(uuid "61ad9246-fab0-4c4c-bd72-b5f458d73c53")
+	)
+	(wire
+		(pts
+			(xy 152.4 86.36)
+			(xy 154.94 86.36)
+		)
+		(uuid "9711226b-25cd-4d33-936f-250bca44d5a2")
+	)
+	(wire
+		(pts
+			(xy 205.74 53.34)
+			(xy 203.2 53.34)
+		)
+		(uuid "b74c0773-9960-48b6-845a-f19132cbf0a8")
+	)
+	(wire
+		(pts
+			(xy 205.74 55.88)
+			(xy 203.2 55.88)
+		)
+		(uuid "b6825de6-a01b-45c1-8a51-9b278566250d")
+	)
+	(wire
+		(pts
+			(xy 205.74 144.78)
+			(xy 203.2 144.78)
+		)
+		(uuid "4f41cfaf-b549-4afc-b7f1-fc46d50ea91d")
+	)
+	(wire
+		(pts
+			(xy 205.74 63.5)
+			(xy 203.2 63.5)
+		)
+		(uuid "567a3128-60d9-41bf-9474-88c509244351")
+	)
+	(wire
+		(pts
+			(xy 76.2 48.26)
+			(xy 93.98 48.26)
+		)
+		(uuid "488c2fba-871b-4cf5-9051-d832f08eb4d4")
+	)
+	(wire
+		(pts
+			(xy 93.98 48.26)
+			(xy 93.98 160.02)
+		)
+		(uuid "83be4627-1cfe-450c-b0f5-95ab182d75d7")
+	)
+	(wire
+		(pts
+			(xy 93.98 160.02)
+			(xy 243.84 160.02)
+		)
+		(uuid "fd504dee-ca48-4601-a426-6d4dc6b0361e")
+	)
+	(wire
+		(pts
+			(xy 243.84 160.02)
+			(xy 243.84 152.4)
+		)
+		(uuid "ef13268f-68bb-4f9f-a557-79e4153e58d4")
+	)
+	(wire
+		(pts
+			(xy 203.2 142.24)
+			(xy 205.74 142.24)
+		)
+		(uuid "ed9720c4-fd47-446f-8c5e-72c78188c610")
+	)
+	(text "battery-monitor-rev-a"
+		(at 25.4 160.02 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+			)
+			(justify left top)
+		)
+		(uuid "c30825cc-37e5-44c7-be7a-04ece866017b")
+	)
+	(label "LORA_NSS"
+		(at 154.94 43.18 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "55774fa1-9543-48df-945b-d4b3d18d59ad")
+	)
+	(label "LORA_MOSI"
+		(at 154.94 45.72 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "22820f17-2a77-49bc-a7db-776cb0143263")
+	)
+	(label "LORA_SCK"
+		(at 154.94 48.26 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e08f36f6-24ea-46c5-b790-3a2df00949c1")
+	)
+	(label "LORA_MISO"
+		(at 154.94 50.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c2da2903-520e-409b-9cdb-7b3cc6127010")
+	)
+	(label "LORA_RST"
+		(at 154.94 53.34 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a09a0e68-0130-4ae1-a306-5b52d785a8f5")
+	)
+	(label "LORA_DIO0"
+		(at 154.94 55.88 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "39715dfe-1886-4060-8c68-8fe434e5a5fe")
+	)
+	(label "LORA_DIO1"
+		(at 154.94 58.42 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9bb99010-fe7d-4e65-8604-32d4eacc4c95")
+	)
+	(label "I2C_SDA"
+		(at 154.94 66.04 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "abd2eb11-70b1-48b8-816e-5cc704355773")
+	)
+	(label "I2C_SCL"
+		(at 154.94 68.58 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "635af420-9831-45fb-bb79-f0290bbfec60")
+	)
+	(label "BTN_USER"
+		(at 154.94 71.12 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "8522788e-baf3-4341-ba04-9bc4d17bcd06")
+	)
+	(label "LED_STATUS"
+		(at 154.94 73.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "efc3b206-fb90-4e71-9177-9489a2efaa87")
+	)
+	(label "LED_ALERT"
+		(at 154.94 76.2 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "37d0f44a-eb57-44e3-9c0a-5b6b2b7770a7")
+	)
+	(label "LORA_NSS"
+		(at 203.2 83.82 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "9625d6a8-0bed-4bbd-a2c6-e482afefab10")
+	)
+	(label "LORA_MOSI"
+		(at 203.2 86.36 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "130c4498-18f5-4c53-9035-c75ed62a0580")
+	)
+	(label "LORA_SCK"
+		(at 203.2 88.9 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a1d32e40-ad2c-42a5-bf8e-c078c6c50e15")
+	)
+	(label "LORA_MISO"
+		(at 203.2 91.44 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a117d65b-8f9c-4c1a-a7f6-49ed17894572")
+	)
+	(label "LORA_RST"
+		(at 203.2 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "97650622-eb92-4dca-86e1-e99545ef9acf")
+	)
+	(label "LORA_DIO0"
+		(at 203.2 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "844698e9-bc20-4cb8-ac07-88306193b253")
+	)
+	(label "LORA_DIO1"
+		(at 203.2 99.06 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "35402fb6-9f1f-4c1e-8c3c-c023d99c55aa")
+	)
+	(label "BTN_USER"
+		(at 203.2 124.46 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "90890e94-57b2-4438-9c7c-db93554ccdda")
+	)
+	(label "LED_STATUS"
+		(at 203.2 127 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "63902b23-3a40-409d-8e4c-ef7e6f81cf29")
+	)
+	(label "LED_ALERT"
+		(at 203.2 129.54 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "75b8aadb-e69a-4185-b3f4-00cc81cfab4f")
+	)
+	(label "I2C_SDA"
+		(at 203.2 132.08 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "f9527034-fc1b-4bc9-90a3-36230e4d68cf")
+	)
+	(label "I2C_SCL"
+		(at 203.2 134.62 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "deb09806-cdc9-4789-a280-024ca2475b63")
+	)
+	(label "VBAT_FUSED"
+		(at 78.74 45.72 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "915bb4b7-4f96-4830-b8b6-b9aaf9491ec4")
+	)
+	(label "GAUGE_EN"
+		(at 154.94 86.36 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "27706889-b65c-46f9-9d55-7581628faaa9")
+	)
+	(label "I2C_SDA"
+		(at 203.2 53.34 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "9a706c69-a6f1-4796-8d48-a23f5ace9b93")
+	)
+	(label "I2C_SCL"
+		(at 203.2 55.88 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "3329eb68-7bfe-4b8d-8cd3-b98569504b17")
+	)
+	(label "GAUGE_EN"
+		(at 203.2 144.78 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "78891274-09d2-401f-a747-2922d8c77eb0")
+	)
+	(label "VBAT_FUSED"
+		(at 203.2 63.5 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "88c29023-818f-4ea1-bd70-b0817047ff04")
+	)
+	(label "VBAT_FUSED"
+		(at 203.2 142.24 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "328d9dca-b834-4988-bac2-1eb173b8c98b")
+	)
+	(sheet
+		(at 25.4 40.64)
+		(size 50.8 30.48)
+		(fields_autoplaced)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "0c21bbb8-5787-400e-ae91-305bd8fa2ede")
+		(property "Sheetname" "01-power"
+			(at 25.4 40.005 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "01-power.kicad_sch"
+			(at 25.4 71.75500000000001 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "VBAT_FUSED" bidirectional
+			(at 76.2 45.72 0)
+			(uuid "15fd5888-72a0-4e6a-8764-fcce7dace42d")
+		)
+		(pin "VIN_PROT" bidirectional
+			(at 76.2 48.26 0)
+			(uuid "245a21b0-7919-43b2-8571-ae63cb292ee6")
+		)
+		(instances
+			(project "battery-monitor-rev-a"
+				(path "/b360fe26-3fda-4aa8-bae7-86b994bfee8d"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 101.6 40.64)
+		(size 50.8 101.6)
+		(fields_autoplaced)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "70d9766d-8732-4f25-96be-f0db36d98b02")
+		(property "Sheetname" "02-mcu-usb"
+			(at 101.6 40.005 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "02-mcu-usb.kicad_sch"
+			(at 101.6 142.875 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "LORA_NSS" bidirectional
+			(at 152.4 43.18 0)
+			(uuid "276a5ea3-3f8a-48ef-a0c9-c365ecb5e38b")
+		)
+		(pin "LORA_MOSI" bidirectional
+			(at 152.4 45.72 0)
+			(uuid "5ca3a3f2-1f54-46d0-bd8f-0e6fa65e4d30")
+		)
+		(pin "LORA_SCK" bidirectional
+			(at 152.4 48.26 0)
+			(uuid "412251c9-61f7-4956-9efc-f2469f24fcc4")
+		)
+		(pin "LORA_MISO" bidirectional
+			(at 152.4 50.8 0)
+			(uuid "d0415aa5-3a00-4f43-aa4a-27d41afe7833")
+		)
+		(pin "LORA_RST" bidirectional
+			(at 152.4 53.34 0)
+			(uuid "f6f2d7c0-1f1b-4dd6-a579-7eb6a3b37acf")
+		)
+		(pin "LORA_DIO0" bidirectional
+			(at 152.4 55.88 0)
+			(uuid "62175795-efce-4f3b-9ed5-bbe54885a2d4")
+		)
+		(pin "LORA_DIO1" bidirectional
+			(at 152.4 58.42 0)
+			(uuid "3eecdae1-ab0f-48d3-92d7-e965cb1d618f")
+		)
+		(pin "I2C_SDA" bidirectional
+			(at 152.4 66.04 0)
+			(uuid "94da80c4-bc56-448b-a1f9-1a1f39bfcccf")
+		)
+		(pin "I2C_SCL" bidirectional
+			(at 152.4 68.58 0)
+			(uuid "9fbe56a6-7ee5-4d08-a08b-9c9d2481c569")
+		)
+		(pin "BTN_USER" bidirectional
+			(at 152.4 71.12 0)
+			(uuid "d9131c99-08df-452e-9b12-ebb570dc3e83")
+		)
+		(pin "LED_STATUS" bidirectional
+			(at 152.4 73.66 0)
+			(uuid "dce2e881-2d76-4599-89ed-50685c28a72f")
+		)
+		(pin "LED_ALERT" bidirectional
+			(at 152.4 76.2 0)
+			(uuid "5518c634-8317-443f-845a-b77df5cc2fab")
+		)
+		(pin "GAUGE_EN" bidirectional
+			(at 152.4 86.36 0)
+			(uuid "07fdf4ce-a5c9-43cd-b6d5-b0afc8ef3ed7")
+		)
+		(instances
+			(project "battery-monitor-rev-a"
+				(path "/b360fe26-3fda-4aa8-bae7-86b994bfee8d"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 205.74 40.64)
+		(size 50.8 30.48)
+		(fields_autoplaced)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "88d3060a-f072-4f94-953b-613529b8a0bc")
+		(property "Sheetname" "03-sense"
+			(at 205.74 40.005 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "03-sense.kicad_sch"
+			(at 205.74 71.75500000000001 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "I2C_SDA" bidirectional
+			(at 205.74 53.34 180)
+			(uuid "378c0c4e-55e6-44c5-a5fe-4876a76b9989")
+		)
+		(pin "I2C_SCL" bidirectional
+			(at 205.74 55.88 180)
+			(uuid "13d54044-9ebe-4c57-9609-222ae27567be")
+		)
+		(pin "VBAT_FUSED" bidirectional
+			(at 205.74 63.5 180)
+			(uuid "9eef2a25-99fd-4939-bb4e-7d16b5032f75")
+		)
+		(instances
+			(project "battery-monitor-rev-a"
+				(path "/b360fe26-3fda-4aa8-bae7-86b994bfee8d"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 205.74 81.28)
+		(size 50.8 30.48)
+		(fields_autoplaced)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "f428ee03-c98a-499b-8d80-95d6d14d6b37")
+		(property "Sheetname" "04-lora"
+			(at 205.74 80.645 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "04-lora.kicad_sch"
+			(at 205.74 112.39500000000001 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "LORA_NSS" bidirectional
+			(at 205.74 83.82 180)
+			(uuid "a0877c9e-1397-4931-b519-0a19a31d75ec")
+		)
+		(pin "LORA_MOSI" bidirectional
+			(at 205.74 86.36 180)
+			(uuid "8d1d4841-49b6-4e19-baea-160def2c5502")
+		)
+		(pin "LORA_SCK" bidirectional
+			(at 205.74 88.9 180)
+			(uuid "d9e661a0-4b5f-43fa-af2d-701e60f71eb5")
+		)
+		(pin "LORA_MISO" bidirectional
+			(at 205.74 91.44 180)
+			(uuid "56d710cd-fd14-49e5-bbb4-3705324228b0")
+		)
+		(pin "LORA_RST" bidirectional
+			(at 205.74 93.98 180)
+			(uuid "2bdf15cc-0d2e-4bbe-8ec0-c55745199a87")
+		)
+		(pin "LORA_DIO0" bidirectional
+			(at 205.74 96.52 180)
+			(uuid "2c32024c-160d-4320-8c9d-d5ec69cdf35c")
+		)
+		(pin "LORA_DIO1" bidirectional
+			(at 205.74 99.06 180)
+			(uuid "4a3cab86-2e51-4882-8ccb-f184cc9ef2e3")
+		)
+		(instances
+			(project "battery-monitor-rev-a"
+				(path "/b360fe26-3fda-4aa8-bae7-86b994bfee8d"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 205.74 121.92)
+		(size 50.8 30.48)
+		(fields_autoplaced)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "9205d872-10ac-43df-8cd9-b151f1cf68ff")
+		(property "Sheetname" "05-io"
+			(at 205.74 121.285 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "05-io.kicad_sch"
+			(at 205.74 153.035 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "BTN_USER" bidirectional
+			(at 205.74 124.46 180)
+			(uuid "ad586202-b54d-4344-b2b9-abc716b72799")
+		)
+		(pin "LED_STATUS" bidirectional
+			(at 205.74 127 180)
+			(uuid "0166f395-4766-4d7a-b9a4-9a5d77cd4cff")
+		)
+		(pin "LED_ALERT" bidirectional
+			(at 205.74 129.54 180)
+			(uuid "90772a7f-c4d1-4287-8041-6a039b352067")
+		)
+		(pin "I2C_SDA" bidirectional
+			(at 205.74 132.08 180)
+			(uuid "71b3bda3-3b4a-455d-9373-ef1220afb247")
+		)
+		(pin "I2C_SCL" bidirectional
+			(at 205.74 134.62 180)
+			(uuid "8c5d7afc-4c9b-4b2c-8ce0-521d70544372")
+		)
+		(pin "VIN_PROT" bidirectional
+			(at 243.84 152.4 270)
+			(uuid "f41d6550-f281-4c7e-b222-102591cc8ec5")
+		)
+		(pin "GAUGE_EN" bidirectional
+			(at 205.74 144.78 180)
+			(uuid "e56af672-e459-45c7-92d1-3a4cbc81c85c")
+		)
+		(pin "VBAT_FUSED" bidirectional
+			(at 205.74 142.24 180)
+			(uuid "4e02edd8-11d4-4095-acd1-b2be1be5547d")
+		)
+		(instances
+			(project "battery-monitor-rev-a"
+				(path "/b360fe26-3fda-4aa8-bae7-86b994bfee8d"
+					(page "6")
+				)
+			)
+		)
+	)
+	(embedded_fonts no)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+  (text "Revision: rev-a    Date: 2026-10-18    Status: Reworked 4-layer design (62 parts)\nESP32-S3-WROOM-1-N16R8 battery voltage monitor, systems up to 24 V,\nWi-Fi reports, Ra-02 433 MHz LoRa fitted (as rev-c).\n01-power: inlet protection, LMR38010SDDAR 3.3 V buck\n02-mcu-usb: native USB-C, buttons/UART removed   04-lora: inherited from rev-c\n03-sense: always-on 0.1 % divider, ADS1115 (I2C 0x48)\n05-io: external button JST-XH 2P (J504), status/alert LEDs, I2C pull-ups, LED voltmeter JST-XH 3P (J503)\nDesign record: evidence/rework-20261018/step1-sch/CHANGES.md"
+    (at 25.4 166.37 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "ce20ed31-8013-4940-992a-c9f69d119db4")
+  )
+)

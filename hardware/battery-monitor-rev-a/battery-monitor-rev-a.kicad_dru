@@ -1,0 +1,100 @@
+(version 1)
+# battery-monitor-rev-a custom rules. 4-layer revision 2026-10-15 (W25): SIG/GND/GND/SIG, JLC04161H-7628, 1.6 mm, outer 1 oz,
+# inner 0.5 oz, HASL JLCPCB default since 2026-10-26 (agents-library skills/pcb-design-review/references/fab-jlcpcb.md, 4-layer rows). Project-file limits:
+# clearance 0.15, track 0.2, via 0.6/0.3, hole-to-hole 0.5, copper-to-edge 0.5; netclasses PWR_BAT 1.0 mm (vias 0.8/0.4;
+# VBAT_TERM, VBAT_FUSED, VIN_PROT, GAUGE_SW, GAUGE_FUSED, V_GAUGE, GAUGE_SENSE), PWR_3V3 0.5 mm, USB_FS 0.24 mm (pair gap 0.15).
+# History: phase 2 2026-10-14 (2-layer), rounds 1-4, W23 simplification and the R512 sense resistor (2026-10-15): see
+# evidence/simplify-20261015/CHANGES.md. 4-layer changes (briefs/task-battery-4l-setup-placement.md): added In1_GND_only,
+# In2_GND_only, Antenna_foreign_footprint (rev-c, rule area ANT_KEEPOUT on all four copper layers), Hole_to_copper,
+# Hole_to_copper_via, Via_annular; removed the 2-layer rule WROOM_BCu_crossings_only (and the 2-layer rule areas KO_buck_BCu,
+# KO_U401_BCu, WROOM_BCU are not re-created: B.Cu now references In2). Battery_voltage_spacing has no layer clause, so its
+# 0.6 mm also sets the inner-plane antipads around battery-net vias. Fixtures for every rule run on the placed board (next task).
+
+# Copper to routed board edge 0.5 mm (Konnect has no tool for this Board Setup field).
+(rule "Copper_to_edge"
+  (constraint edge_clearance (min 0.5mm)))
+
+# Battery inlet and sense source: VBAT_TERM, VBAT_FUSED, VIN_PROT carry at most 0.45 A (6 V system, Wi-Fi peak);
+# 0.5 mm minimum, 1.0 mm preferred (netclass PWR_BAT).
+(rule "Battery_net_width"
+  (condition "A.Type == 'Track' && (A.NetName == '/01-power/VBAT_TERM' || A.NetName == '/VBAT_FUSED' || A.NetName == '/01-power/VIN_PROT')")
+  (constraint track_width (min 0.5mm)))
+
+# Buck switch node: short and wide.
+(rule "Buck_SW_width"
+  (condition "A.Type == 'Track' && A.NetName == '/01-power/BUCK_SW'")
+  (constraint track_width (min 0.6mm)))
+
+# Battery-voltage copper (up to 31 V normal for the 24 V system, about 53 V clamped surge; 62.4 V in the documented 48 V
+# alternate) keeps 0.6 mm from low-voltage copper on tracks and zones (IPC-2221 B2, external uncoated, 31-100 V).
+# Pads are excluded: fixed footprint geometry (SOT-23 gate/source pads differ by 10 V at most).
+(rule "Battery_voltage_spacing"
+  (condition "A.Type != 'Pad' && B.Type != 'Pad' && (A.NetName == '/01-power/VBAT_TERM' || A.NetName == '/VBAT_FUSED' || A.NetName == '/01-power/VIN_PROT' || A.NetName == '/01-power/BUCK_SW' || A.NetName == '/01-power/BUCK_BST' || A.NetName == '/05-io/GAUGE_GATE' || A.NetName == '/05-io/GAUGE_SW' || A.NetName == '/05-io/GAUGE_FUSED' || A.NetName == '/05-io/V_GAUGE' || A.NetName == '/05-io/GAUGE_SENSE') && !(B.NetName == '/01-power/VBAT_TERM' || B.NetName == '/VBAT_FUSED' || B.NetName == '/01-power/VIN_PROT' || B.NetName == '/01-power/BUCK_SW' || B.NetName == '/01-power/BUCK_BST' || B.NetName == '/05-io/GAUGE_GATE' || B.NetName == '/05-io/GAUGE_SW' || B.NetName == '/05-io/GAUGE_FUSED' || B.NetName == '/05-io/V_GAUGE' || B.NetName == '/05-io/GAUGE_SENSE')")
+  (constraint clearance (min 0.6mm)))
+
+# Round 4 (review R4-04 b, 2026-10-15): the pad exemption above stays for pad-to-pad only. Tracks, vias and zones of
+# low-voltage nets keep 0.3 mm from pads of battery-potential nets, and battery-potential tracks/vias/zones keep
+# 0.3 mm from low-voltage pads (no bridge from battery voltage into the 3.3 V side or into a GND pin while soldering).
+(rule "Battery_pad_spacing"
+  (condition "(A.Type == 'Pad' && B.Type != 'Pad' && (A.NetName == '/01-power/VBAT_TERM' || A.NetName == '/VBAT_FUSED' || A.NetName == '/01-power/VIN_PROT' || A.NetName == '/01-power/BUCK_SW' || A.NetName == '/01-power/BUCK_BST' || A.NetName == '/05-io/GAUGE_GATE' || A.NetName == '/05-io/GAUGE_SW' || A.NetName == '/05-io/GAUGE_FUSED' || A.NetName == '/05-io/V_GAUGE' || A.NetName == '/05-io/GAUGE_SENSE') && !(B.NetName == '/01-power/VBAT_TERM' || B.NetName == '/VBAT_FUSED' || B.NetName == '/01-power/VIN_PROT' || B.NetName == '/01-power/BUCK_SW' || B.NetName == '/01-power/BUCK_BST' || B.NetName == '/05-io/GAUGE_GATE' || B.NetName == '/05-io/GAUGE_SW' || B.NetName == '/05-io/GAUGE_FUSED' || B.NetName == '/05-io/V_GAUGE' || B.NetName == '/05-io/GAUGE_SENSE')) || (A.Type == 'Pad' && B.Type != 'Pad' && !(A.NetName == '/01-power/VBAT_TERM' || A.NetName == '/VBAT_FUSED' || A.NetName == '/01-power/VIN_PROT' || A.NetName == '/01-power/BUCK_SW' || A.NetName == '/01-power/BUCK_BST' || A.NetName == '/05-io/GAUGE_GATE' || A.NetName == '/05-io/GAUGE_SW' || A.NetName == '/05-io/GAUGE_FUSED' || A.NetName == '/05-io/V_GAUGE' || A.NetName == '/05-io/GAUGE_SENSE') && (B.NetName == '/01-power/VBAT_TERM' || B.NetName == '/VBAT_FUSED' || B.NetName == '/01-power/VIN_PROT' || B.NetName == '/01-power/BUCK_SW' || B.NetName == '/01-power/BUCK_BST' || B.NetName == '/05-io/GAUGE_GATE' || B.NetName == '/05-io/GAUGE_SW' || B.NetName == '/05-io/GAUGE_FUSED' || B.NetName == '/05-io/V_GAUGE' || B.NetName == '/05-io/GAUGE_SENSE'))")
+  (constraint clearance (min 0.3mm)))
+
+# Round 4 (review R4-11): via copper to any other copper of a low-voltage net 0.2 mm (JLCPCB "via to track 0.2 mm",
+# applied copper-to-copper per the library fab profile). Battery-potential pairs are covered by the rules above.
+(rule "Via_copper_clearance"
+  (condition "A.Type == 'Via' && !(A.NetName == '/01-power/VBAT_TERM' || A.NetName == '/VBAT_FUSED' || A.NetName == '/01-power/VIN_PROT' || A.NetName == '/01-power/BUCK_SW' || A.NetName == '/01-power/BUCK_BST' || A.NetName == '/05-io/GAUGE_GATE' || A.NetName == '/05-io/GAUGE_SW' || A.NetName == '/05-io/GAUGE_FUSED' || A.NetName == '/05-io/V_GAUGE' || A.NetName == '/05-io/GAUGE_SENSE') && !(B.NetName == '/01-power/VBAT_TERM' || B.NetName == '/VBAT_FUSED' || B.NetName == '/01-power/VIN_PROT' || B.NetName == '/01-power/BUCK_SW' || B.NetName == '/01-power/BUCK_BST' || B.NetName == '/05-io/GAUGE_GATE' || B.NetName == '/05-io/GAUGE_SW' || B.NetName == '/05-io/GAUGE_FUSED' || B.NetName == '/05-io/V_GAUGE' || B.NetName == '/05-io/GAUGE_SENSE')")
+  (constraint clearance (min 0.2mm)))
+
+# Round 4 (review R4-02): ADS1115 inputs, the divider tap and I2C keep 5 mm from the buck switch node and L101.
+(rule "Analog_buck_distance"
+  (condition "(A.NetName == '/03-sense/ADC_AIN0' || A.NetName == '/03-sense/VBAT_TAP' || A.NetName == '/I2C_SCL' || A.NetName == '/I2C_SDA') && (B.NetName == '/01-power/BUCK_SW' || B.Reference == 'L101')")
+  (constraint clearance (min 5mm)))
+
+# Intentionally unconnected pins that must stay copper-free (straps, PSRAM, unused functions); list from the phase-2 netlist.
+# Free general GPIOs (IO16/17/18/39/42/47/48) and Ra-02 DIO2-5 are not listed: a test pad may be added in layout.
+(rule "NC_isolation"
+  (condition "A.NetName == 'unconnected-(J201-SBU1-PadA8)' || A.NetName == 'unconnected-(J201-SBU2-PadB8)' || A.NetName == 'unconnected-(U101-PG-Pad6)' || A.NetName == 'unconnected-(U201-IO3-Pad15)' || A.NetName == 'unconnected-(U201-IO35-Pad28)' || A.NetName == 'unconnected-(U201-IO36-Pad29)' || A.NetName == 'unconnected-(U201-IO37-Pad30)' || A.NetName == 'unconnected-(U201-IO45-Pad26)' || A.NetName == 'unconnected-(U201-IO46-Pad16)' || A.NetName == 'unconnected-(U202-CT-Pad4)' || A.NetName == 'unconnected-(U301-AIN2-Pad6)' || A.NetName == 'unconnected-(U201-IO1-Pad39)' || A.NetName == 'unconnected-(U201-IO4-Pad4)' || A.NetName == 'unconnected-(U201-IO7-Pad7)' || A.NetName == 'unconnected-(U301-ALERT{slash}RDY-Pad2)' || A.NetName == 'unconnected-(U201-IO2-Pad38)' || A.NetName == 'unconnected-(U201-IO6-Pad6)' || A.NetName == 'unconnected-(U201-RXD0-Pad36)' || A.NetName == 'unconnected-(U201-TXD0-Pad37)' || A.NetName == 'unconnected-(U301-AIN1-Pad5)' || A.NetName == 'unconnected-(U301-AIN3-Pad7)'")
+  (constraint disallow track via zone))
+
+# WROOM-1 thermal pad holes: 0.30 mm since 2026-10-26 (KiCad footprint has 0.20 mm, which is a JLCPCB surcharge tier;
+# agents-library checklist DFM-045). Never below 0.3 mm on this board.
+(rule "U201_thermal_holes"
+  (severity error)
+  (condition "A.Type == 'Pad' && A.Reference == 'U201' && A.Pad_Type == 'Through-hole'")
+  (constraint hole_size (min 0.3mm)))
+
+# Stack SIG/GND/GND/SIG (rev-c): both inner layers carry GND copper only (through vias and holes of other nets pass).
+(rule "In1_GND_only"
+  (severity error)
+  (layer "In1.Cu")
+  (condition "(A.Type == 'Track' || A.Type == 'Zone') && A.NetName != 'GND'")
+  (constraint disallow track zone))
+
+(rule "In2_GND_only"
+  (severity error)
+  (layer "In2.Cu")
+  (condition "(A.Type == 'Track' || A.Type == 'Zone') && A.NetName != 'GND'")
+  (constraint disallow track zone))
+
+# WROOM antenna band (rev-c): the four-layer rule area ANT_KEEPOUT excludes copper; this rule excludes other footprints.
+(rule "Antenna_foreign_footprint"
+  (severity error)
+  (condition "A.Type == 'Footprint' && A.Reference != 'U201' && A.intersectsArea('ANT_KEEPOUT')")
+  (constraint disallow footprint))
+
+# Inner layers (fab-jlcpcb.md 4-layer rows): plated component hole edge to inner copper 0.30 mm, via hole edge to inner
+# copper 0.20 mm (the project-wide hole clearance 0.25 mm stays for the outer layers).
+(rule "Hole_to_copper"
+  (layer inner)
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole'")
+  (constraint hole_clearance (min 0.3mm)))
+
+(rule "Hole_to_copper_via"
+  (layer inner)
+  (condition "A.Type == 'Via'")
+  (constraint hole_clearance (min 0.2mm)))
+
+# Via annular ring 0.15 mm (0.6/0.3 signal, 0.8/0.4 power; fab minimum 0.075 preferred, design value 0.15).
+(rule "Via_annular"
+  (condition "A.Type == 'Via'")
+  (constraint annular_width (min 0.15mm)))
