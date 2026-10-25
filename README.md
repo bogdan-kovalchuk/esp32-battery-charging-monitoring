@@ -28,8 +28,27 @@ ESP32 -- HTTP or HTTPS --> Flask -- SQLite outbox --> signal-cli --> Signal grou
 | `server/` | Flask API and signal-cli integration |
 | `firmware/test/` | Host-side firmware logic tests |
 | `server/tests/` | Backend tests |
+| `hardware/battery-monitor-rev-a/` | KiCad 10 project of the rev-a PCB and its production package |
 
 ## Hardware
+
+### Rev-a PCB
+
+[`hardware/battery-monitor-rev-a/`](hardware/battery-monitor-rev-a/) is a
+dedicated board: ESP32-S3-WROOM-1-N16R8, Ra-02 433 MHz LoRa, ADS1115 battery
+voltage measurement for 6-24 V systems (48 V by a part swap), switched LED
+voltmeter output; 4 layers, 62 x 50 mm, hand assembly.
+
+| Path | Content |
+|---|---|
+| `hardware/battery-monitor-rev-a/*.kicad_*`, `lib/`, `3dmodels/` | KiCad 10 schematic (5 sheets), board, design rules, project library and 3D models |
+| [`production/`](hardware/battery-monitor-rev-a/production/README.md) | Gerber ZIP for a standard JLCPCB 4-layer order, drill, IPC-D-356, BOM, purchase workbook, schematic PDF, assembly drawings, STEP, `manifest.sha256` |
+| [`ASSEMBLY-NOTES.md`](hardware/battery-monitor-rev-a/production/03-documentation/ASSEMBLY-NOTES.md) | Pin map, hand-assembly order, firmware obligations, bring-up tests |
+
+The firmware in `firmware/` still targets the ESP32 DevKit prototype below; it
+is not yet ported to the ESP32-S3 and the rev-a pin map.
+
+### DevKit prototype
 
 | Signal | ESP32 pin | Notes |
 |---|---:|---|
